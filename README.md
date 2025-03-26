@@ -1,6 +1,6 @@
 # 123Table
 
-123Table is a command line tool that makes it easy to load rows into a database table.
+123Table is a containerized command line tool that makes it easy to load rows into a database table.
 
 123Table is designed to read data from a db table or from a CSV (using a JDBC driver)
 and insert it to any JDBC compatible database.
@@ -20,6 +20,21 @@ bells and whistles of build tools.
 
 
 ## HOWTOs
+
+
+### Basic usage
+
+Given a CSV file named _table.csv_ in the current directory, run
+
+```bash
+docker run --rm -it \
+  -v $(pwd):/data ghcr.io/davidecavestro/123table:latest \
+  -url jdbc:h2:mem:testdb \
+  -table mytable \
+  -create
+```
+to load it into a newly created table of a temporary in-memory db.
+Replace the `-url` value with a property JDBC url for your target db. 
 
 ### How to build locally
 
