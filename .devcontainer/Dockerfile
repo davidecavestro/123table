@@ -1,1 +1,1 @@
-FROM groovy:4
+FROM groovy:4.0-jdk21

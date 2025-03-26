@@ -4,7 +4,16 @@
 	"name": "groovy",
 	"dockerComposeFile": "compose.yml",
 	"service": "devcontainer",
-	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}"
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"NicolasVuillamy.vscode-groovy-lint",
+				"ms-azuretools.vscode-docker",
+				"DontShaveTheYak.groovy-guru"
+			]
+		}
+	}
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
