@@ -1,8 +1,8 @@
-# 123Table
+# 123table
 
-123Table is a containerized command line tool that makes it easy to load rows into a database table.
+123table is a containerized command line tool that makes it easy to load rows into a database table.
 
-123Table is designed to read data from a db table or from a CSV (using a JDBC driver)
+123table is designed to read data from a db table or from a CSV (using a JDBC driver)
 and insert it to any JDBC compatible database.
 
 ## Project status
@@ -13,10 +13,10 @@ Early alpha, not working yet.
 ## Motivation
 
 Beyond the obvious need to load rows into a db table, this project began
-to experiment with the feasibility and limitations - in 2025 - of using only
-Groovy scripts, a Dockerfile and some bash as a minimalist approach to
-developing a small CLI tool with some automated test coverage without the
-bells and whistles of build tools.
+to experiment as a developer with the feasibility and limitations - in
+2025 - of using only Groovy scripts, a Dockerfile and some bash as a
+minimalist approach to developing a small CLI tool with some automated
+test coverage without the bells and whistles of build tools.
 
 
 ## HOWTOs

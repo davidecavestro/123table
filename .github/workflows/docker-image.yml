@@ -8,6 +8,9 @@ on:
       - '*'
   workflow_dispatch:
 
+env:
+  TEST_TAG: ${{ github.repository }}:test
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -52,14 +55,34 @@ jobs:
 
       - name: Test
         run: |
-          docker run ./target:/target --rm ${{ env.TEST_TAG }}
+          docker run -t -e TESTUID=0 -e TESTGID=0 --rm ${{ env.TEST_TAG }}
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
+        # if: always()
         with:
           files: |
-            target/reports/*.xml
+            target/junit-platform-events-*.xml
+
+      - name: Generate JaCoCo badge
+        id: jacoco
+        uses: cicirello/jacoco-badge-generator@v2
+        with:
+          badges-directory: badges
+          generate-branches-badge: true
+          generate-summary: true
+          jacoco-csv-file: "**/jacoco.csv"
+
+      - name: Log coverage percentages to workflow output
+        run: |
+          echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
+          echo "branches = ${{ steps.jacoco.outputs.branches }}"
+
+      - name: Upload JaCoCo coverage report as a workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco/
 
       - name: Build and push image
         uses: docker/build-push-action@v6
@@ -67,8 +90,10 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
+          build-args: |
+            TESTUID=1001
+            TESTGID=100
           tags: |
-            ${{ github.repository }}:${{ github.ref_name }}
             ghcr.io/${{ github.repository }}:${{ github.ref_name }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

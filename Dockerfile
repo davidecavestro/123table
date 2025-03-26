@@ -3,6 +3,8 @@ FROM groovy:4.0-jdk21 AS app-base
 
 USER 0:0
 RUN mkdir /app /drivers /data
+RUN chown -R 1000:0 /app /drivers /data
+USER 1000:0
 
 WORKDIR /drivers
 COPY build/download.sh /drivers
@@ -19,14 +21,15 @@ FROM app-base AS build
 #RUN curl -sSL -O https://jdbc.postgresql.org/download/postgresql-42.7.5.jar
 #RUN curl -sSL -O https://download.oracle.com/otn-pub/otn_software/jdbc/237/ojdbc17.jar
 #RUN curl -sSL 'https://go.microsoft.com/fwlink/?linkid=2310307' | tar xvvzf -
-COPY main.groovy /app
-COPY lib.groovy /app
-COPY opts.groovy /app
-RUN chown -R 1000:0 /app /drivers /data
+COPY --chown=1000:0 main.groovy /app
+COPY --chown=1000:0 lib.groovy /app
+COPY --chown=1000:0 opts.groovy /app
 
 
 # test stage
 FROM app-base AS tests-base
+ARG TESTUID=1000
+ARG TESTGID=0
 
 USER 0:0
 RUN mkdir /build /target
@@ -38,7 +41,12 @@ RUN sh ${DRIVERS_DIR}/download.sh org.jacoco:org.jacoco.cli:0.8.12 /build nodeps
 RUN sh ${DRIVERS_DIR}/download.sh org.opentest4j.reporting:open-test-reporting-cli:0.2.2 /build standalone
 
 COPY libspec.groovy /app
-COPY --chown=1000:0 build/runtests.sh /build
+COPY build/runtests.sh /build
+
+USER 0:0
+RUN chown -R ${TESTUID}:${TESTGID} /build /target /drivers /app
+RUN chmod -R ug+w /build /target /drivers /app
+USER ${TESTUID}:${TESTGID}
 
 ENTRYPOINT [ "sh", "/build/runtests.sh" ]
 

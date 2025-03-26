@@ -10,10 +10,14 @@
 
 echo "runnning tests"
 export BUILDDIR=${1:-"/build"}
-export TARGETDIR=${2:-"/target"}
+export TARGETDIR=${2:-${GITHUB_WORKSPACE:-"/target"}}
 export SOURCESDIR=${3:-"/app"}
 export CLASSESDIR=${4:-"${BUILDDIR}/classes"}
 set -x
+
+id
+pwd
+ls -lhan
 
 cd ${SOURCESDIR}
 
@@ -21,19 +25,19 @@ JACOCO_PATH=$(printf '%s' ${BUILDDIR}/org.jacoco.agent-*-runtime.jar) \
 AGENT_CFG="-javaagent:${JACOCO_PATH}=destfile=${BUILDDIR}/jacoco.exec,classdumpdir=${CLASSESDIR},includes=main:lib" \
 JUNIT_CFG="\
 -Djunit.platform.reporting.output.files=TEST-report.xml,TEST-report.json,TEST-report.html \
--Djunit.platform.reporting.open.xml.enabled=false \
+-Djunit.platform.reporting.open.xml.enabled=true \
 -Djunit.platform.output.capture.stdout=true \
 -Djunit.platform.output.capture.stderr=true \
--Djunit.platform.reporting.output.dir=${TARGETDIR}/reports" \
+-Djunit.platform.reporting.output.dir=${TARGETDIR}" \
 JAVA_OPTS="${AGENT_CFG} ${JUNIT_CFG}" \
 groovy \
   -cp $(printf '%s:' ${DRIVERS_DIR}/*.jar)$(printf '%s:' ${BUILDDIR}/spock-*.jar) \
   ${SOURCESDIR}/libspec.groovy
 
-ls -lha ${BUILDDIR}
-ls -lha ${TARGETDIR}
-ls -lha ${SOURCESDIR}
-ls -lha ${CLASSESDIR}
+ls -lhan ${BUILDDIR}
+ls -lhan ${TARGETDIR}
+ls -lhan ${SOURCESDIR}
+ls -lhan ${CLASSESDIR}
 # copy test reports to target dir
 #cp -r ${SOURCESDIR}/spock ${TARGETDIR}/tests
 
@@ -52,5 +56,5 @@ java \
 java \
   -jar $(printf '%s' ${BUILDDIR}/open-test-reporting-cli-*.jar) \
   html-report \
-  --output ${TARGETDIR}/reports/tests.html \
-  ${TARGETDIR}/reports/junit-platform-events-*.xml	
+  --output ${TARGETDIR}/tests.html \
+  ${TARGETDIR}/junit-platform-events-*.xml	
