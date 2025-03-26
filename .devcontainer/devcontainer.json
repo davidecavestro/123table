@@ -10,7 +10,7 @@
 			"extensions": [
 				"NicolasVuillamy.vscode-groovy-lint",
 				"ms-azuretools.vscode-docker",
-				"DontShaveTheYak.groovy-guru"
+				"eamodio.gitlens"
 			]
 		}
 	}

@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+groovy \
+  -cp $(printf '%s:' ${DRIVERS_DIR}/*.jar) \
+  /app/main.groovy \
+  "$@"

@@ -1,5 +1,10 @@
 # 123Table
 
+123Table is a command line tool that makes it easy to load rows into a database table.
+
+123Table is designed to read data from a db table or from a CSV (using a JDBC driver)
+and insert it to any JDBC compatible database.
+
 ## Project status
 
 Early alpha, not working yet.

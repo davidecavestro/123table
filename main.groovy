@@ -3,12 +3,12 @@
 import groovy.cli.commons.CliBuilder
 
 def defaultSourceUrl = 'jdbc:relique:csv:/data'
-def defaultSourceTable = '123table'
+def defaultSourceTable = 'table'
 def defaultSourceQuery = 'SELECT * FROM <<source-table>>'
 def defaultBatchSize = 100
 
 def cli = new CliBuilder(
-    header: '123table is a command line tool making it easy to load rows into a database.',
+    header: '123Table is a command line tool that makes it easy to load rows into a database table.',
     usage:'123t [options] -url jdbc:h2:mem:testdb -table mytable',
     width: -1
 ).tap {
@@ -25,18 +25,18 @@ def cli = new CliBuilder(
         args: 1,
         defaultValue: defaultSourceTable
     )
-    table(longOpt: 'target-table', 'Target table name', args: 1, required: true)
+    table(longOpt: 'target-table', 'Target table name. [defaults to <<source-table>>]', args: 1)
     query(
         longOpt: 'source-query', "Source query. [defaults to '${defaultSourceQuery}']",
-        args: 1,
-        defaultValue: defaultSourceQuery
+        args: 1
     )
     batch(
         longOpt: 'batch-size', "Batch size. [defaults to '${defaultBatchSize}']",
-        args: 1,
-        type: Integer,
-        defaultValue: defaultBatchSize
+        args: 1
     )
+    create(longOpt: 'create-table', 'Create the target table')
+    truncate(longOpt: 'truncate-table', 'Truncate the target table')
+    dry(longOpt: 'dry-run', 'Just mimic write actions, avoid making any changes to the target db')
     h(longOpt: 'help', 'Usage Information')
 }
 
@@ -53,4 +53,5 @@ if (cliOptions.help) {
     System.exit(0)
 }
 
-new lib().execute(cliOptions)
+new lib().execute(new opts().fromCli(cliOptions))
+// new lib().execute(cliOptions)

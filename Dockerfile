@@ -21,6 +21,7 @@ FROM app-base AS build
 #RUN curl -sSL 'https://go.microsoft.com/fwlink/?linkid=2310307' | tar xvvzf -
 COPY main.groovy /app
 COPY lib.groovy /app
+COPY opts.groovy /app
 RUN chown -R 1000:0 /app /drivers /data
 
 
@@ -74,5 +75,9 @@ COPY --from=build /drivers /drivers
 USER 1000:0
 WORKDIR /app
 
-ENTRYPOINT [ "groovy", "-cp", "$(printf '%s:' /${DRIVERS_DIR}/*.jar)", "/app/main.groovy" ]
+COPY --chmod=750 entrypoint /app/entrypoint
+ENV DRIVERS_DIR=/drivers
+
+ENTRYPOINT [ "/app/entrypoint" ]
+#ENTRYPOINT [ "groovy", "-cp", "$(printf '%s:' ${DRIVERS_DIR}/*.jar)", "/app/main.groovy" ]
 CMD [ "--help" ]
