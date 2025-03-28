@@ -1,5 +1,7 @@
 # 123table
 
+[![Coverage](.github/badges/jacoco.svg)](https://github.com/davidecavestro/123table/actions/workflows/build.yml)
+
 123table is a containerized command line tool that makes it easy to load rows into a database table.
 
 123table is designed to read data from a db table or from a CSV (using a JDBC driver)

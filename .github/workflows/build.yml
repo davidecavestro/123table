@@ -55,14 +55,17 @@ jobs:
 
       - name: Test
         run: |
-          docker run -t -e TESTUID=0 -e TESTGID=0 --rm ${{ env.TEST_TAG }}
+          chmod a+w target
+          docker run --rm -t -e TESTUID=$(id -u) -e TESTGID=0 -v $(pwd)/target:/target ${{ env.TEST_TAG }}
+          ls -lha target
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
-        # if: always()
+        if: always()
         with:
-          files: |
-            target/junit-platform-events-*.xml
+          files: ./target/junit-platform-events-*.xml
+          comment_mode: always
+          job_summary: true
 
       - name: Generate JaCoCo badge
         id: jacoco
@@ -71,7 +74,7 @@ jobs:
           badges-directory: badges
           generate-branches-badge: true
           generate-summary: true
-          jacoco-csv-file: "**/jacoco.csv"
+          jacoco-csv-file: "**/coverage.csv"
 
       - name: Log coverage percentages to workflow output
         run: |
@@ -82,7 +85,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-report
-          path: target/site/jacoco/
+          path: target/coverage
 
       - name: Build and push image
         uses: docker/build-push-action@v6
