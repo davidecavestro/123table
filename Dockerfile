@@ -83,9 +83,9 @@ COPY --from=build /drivers /drivers
 USER 1000:0
 WORKDIR /app
 
-COPY --chmod=750 entrypoint /app/entrypoint
+COPY --chmod=750 123t /app/123t
 ENV DRIVERS_DIR=/drivers
 
-ENTRYPOINT [ "/app/entrypoint" ]
+ENTRYPOINT [ "/app/123t" ]
 #ENTRYPOINT [ "groovy", "-cp", "$(printf '%s:' ${DRIVERS_DIR}/*.jar)", "/app/main.groovy" ]
 CMD [ "--help" ]
