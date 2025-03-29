@@ -1,0 +1,31 @@
+name: Cleanup Badges Branch
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Force cleanup of badges branch'
+        required: false
+        default: false
+  schedule:
+    - cron: 0 0 * * 1  # Run weekly
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: badges
+          path: badges
+      - name: Reset and create single commit
+        run: |
+          pushd badges
+          git rm -rf .
+          git clean -fdx
+          git checkout --orphan temp
+          git reset --hard
+          git commit --allow-empty -m "Initial badges branch"
+          git branch -D main
+          git branch -m temp main
+          git push --force origin main
+          popd
