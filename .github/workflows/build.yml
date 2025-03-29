@@ -95,6 +95,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           allow_empty_commit: true
+          enable_jekyll: true
 
       # - name: Comment on PR with coverage percentages
       #   if: ${{ github.event_name == 'pull_request' }}
