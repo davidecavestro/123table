@@ -2,7 +2,7 @@
 
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/davidecavestro/123table?logo=GitHub)](https://github.com/davidecavestro/123table/releases)
 [![build](https://github.com/davidecavestro/123table/actions/workflows/build.yml/badge.svg)](https://github.com/davidecavestro/123table/actions/workflows/build.yml)
-[![coverage](https://raw.githubusercontent.com/davidecavestro/123table/badges/jacoco.svg)](https://github.com/davidecavestro/123table/actions/workflows/build.yml) [![branches coverage](https://raw.githubusercontent.com/davidecavestro/123table/badges/branches.svg)](https://github.com/davidecavestro/123table/actions/workflows/build.yml)
+[![coverage](https://raw.githubusercontent.com/davidecavestro/123table/badges/jacoco.svg)](https://github.com/davidecavestro/123table/actions/workflows/build.yml)
 
 
 123table is a containerized command line tool that makes it easy to load rows into a database table.
