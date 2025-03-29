@@ -5,7 +5,7 @@ on:
       force:
         description: 'Force cleanup of badges branch'
         required: false
-        default: false
+        default: 'false'
   schedule:
     - cron: 0 0 * * 1  # Run weekly
 
