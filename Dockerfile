@@ -1,8 +1,9 @@
+ARG GROOVY_VERSION=4.0.25
 # build stage
-FROM groovy:4.0-jdk21 AS app-base
+FROM groovy:${GROOVY_VERSION}-jdk21 AS app-base
 
 USER 0:0
-RUN mkdir /app /drivers /data
+RUN mkdir -p /app/lib /drivers /data
 RUN chown -R 1000:0 /app /drivers /data
 USER 1000:0
 
@@ -15,6 +16,8 @@ RUN sh download.sh com.microsoft.sqlserver:mssql-jdbc:12.10.0.jre11
 RUN sh download.sh net.sourceforge.csvjdbc:csvjdbc:1.0.46
 RUN sh download.sh com.oracle.database.jdbc:ojdbc11:23.7.0.25.01
 RUN sh download.sh com.h2database:h2:2.3.232
+RUN sh download.sh org.xerial:sqlite-jdbc:3.49.1.0
+RUN sh download.sh org.crac:crac:1.5.0 /app/lib
 
 
 FROM app-base AS build
@@ -25,6 +28,13 @@ COPY --chown=1000:0 main.groovy /app
 COPY --chown=1000:0 lib.groovy /app
 COPY --chown=1000:0 opts.groovy /app
 
+WORKDIR /app
+
+RUN export CRAC_JAR=$(printf '%s' /app/lib/crac-*.jar) \
+  prinenv CRAC_JAR && \
+  jar -t -f ${CRAC_JAR} && \
+  groovyc -cp ${CRAC_JAR} *.groovy && \
+    jar cf app.jar *.class
 
 # test stage
 FROM app-base AS tests-base
@@ -75,17 +85,44 @@ COPY --from=build /app/*.groovy /app
 #       --csv /build/coverage.csv
 
 # dist stage
-FROM groovy:4
+#FROM groovy:${GROOVY_VERSION}-jdk21 as cold
 
-COPY --from=build /app /app
-COPY --from=build /drivers /drivers
+# FROM ghcr.io/bell-sw/liberica-runtime-container:jdk-crac-glibc AS cold
+FROM azul/zulu-openjdk:21-jdk-crac-latest AS cold
+ARG GROOVY_VERSION
+ENV GROOVY_VERSION=${GROOVY_VERSION}
+
+COPY --from=build /opt/groovy /opt/groovy
+COPY --from=build --chown=1000:0 /app/app.jar /app/app.jar
+COPY --from=build --chown=1000:0 /drivers /drivers
+COPY --from=build --chown=1000:0 /app/lib /app/lib
+
+WORKDIR /app
+#USER 0:0
+#RUN groovyc *.groovy && \
+#    jar cvf app.jar *.class
 
 USER 1000:0
-WORKDIR /app
 
-COPY --chmod=750 123t /app/123t
+COPY --chown=1000:0 --chmod=750 123t /app/123t
 ENV DRIVERS_DIR=/drivers
+ENV PATH=$PATH:/opt/groovy/bin
+#RUN ./123t --help
+
+#RUN JAVA_OPTS=" -XX:CRaCCheckpointTo=/app/cr" groovy -cp $(printf '%s:' ${DRIVERS_DIR}/*.jar) /app/main.groovy -w || true
 
 ENTRYPOINT [ "/app/123t" ]
 #ENTRYPOINT [ "groovy", "-cp", "$(printf '%s:' ${DRIVERS_DIR}/*.jar)", "/app/main.groovy" ]
 CMD [ "--help" ]
+
+# FROM cold AS warm
+# # ENV JAVA_OPTS=" -XX:CRaCCheckpointTo=cr"
+# #USER 0:0
+
+# #RUN echo "-h" | /app/123t -w
+
+# RUN export CRAC_MODE=save && echo "-h" | /app/123t
+# # ENV JAVA_OPTS=" -XX:CRaCRestoreFrom=/app/cr"
+# ENV CRAC_MODE=restore
+
+# #FROM warm AS cold

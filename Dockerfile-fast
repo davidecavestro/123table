@@ -1,0 +1,5 @@
+ARG BASE
+FROM ${BASE}
+
+COPY cr /app/cr
+ENV CRAC_MODE=restore

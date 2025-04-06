@@ -125,9 +125,6 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          # build-args: |
-          #   TESTUID=1001
-          #   TESTGID=100
           tags: |
             ghcr.io/${{ github.repository }}:${{ github.ref_name }}
           cache-from: type=gha
@@ -141,6 +138,41 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+        if: startsWith(github.ref, 'refs/tags/')
+
+      - name: Fast image warmup
+        run: |
+          mkdir cr
+          docker run --rm -t \
+            --cap-add=CHECKPOINT_RESTORE --cap-add=SYS_PTRACE -e CRAC_MODE=save \
+            -v $(pwd)/cr:/app/cr \
+            ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+
+      - name: Build and push fast image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile-fast
+          platforms: linux/amd64,linux/arm64
+          push: true
+          build-args: |
+            BASE=ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+          tags: |
+            ghcr.io/${{ github.repository }}:fast-${{ github.ref_name }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Push latest fast image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile-fast
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}:fast-latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
         if: startsWith(github.ref, 'refs/tags/')

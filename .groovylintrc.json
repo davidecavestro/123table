@@ -19,6 +19,9 @@
         "ImplicitClosureParameter": {
             "enabled": false
         },
+        "JavaIoPackageAccess": {
+            "enabled": false
+        },
         "MethodParameterTypeRequired": {
             "enabled": false
         },

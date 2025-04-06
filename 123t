@@ -1,5 +1,24 @@
-#!/usr/bin/env bash
-groovy \
-  -cp $(printf '%s:' ${DRIVERS_DIR}/*.jar) \
-  /app/main.groovy \
-  "$@"
+#!/usr/bin/env sh
+
+#set -x
+set -e
+
+export COMMONS_CLI_JAR=$(printf '%s' /opt/groovy/lib/commons-cli-*.jar)
+export CRAC_JAR=$(printf '%s' /app/lib/crac-*.jar)
+export GROOVY_CORE="/app/app.jar:/opt/groovy/lib/groovy-${GROOVY_VERSION}.jar"
+export GROOVY_CLI="/opt/groovy/lib/groovy-cli-commons-${GROOVY_VERSION}.jar"
+export GROOVY_SQL="/opt/groovy/lib/groovy-sql-${GROOVY_VERSION}.jar"
+
+export CLASSPATH="${GROOVY_CORE}:${GROOVY_CLI}:${GROOVY_SQL}:${COMMONS_CLI_JAR}:${CRAC_JAR}:$(printf '%s:' ${DRIVERS_DIR}/*.jar)"
+
+CRAC_PATH="${CRAC_PATH-/app/cr}"
+CRAC_MODE="${CRAC_MODE-}"
+
+echo "CRAC_MODE: $CRAC_MODE"
+if [ "${CRAC_MODE}" = save ]; then
+  java -XX:CRaCMinPid=128 -XX:CRaCCheckpointTo="${CRAC_PATH}" -cp "${CLASSPATH}" main -w
+elif [ "${CRAC_MODE}" = restore ]; then
+  echo "$@" | java -XX:CRaCRestoreFrom="${CRAC_PATH}"
+else
+  java -cp "${CLASSPATH}" main "$@"
+fi
