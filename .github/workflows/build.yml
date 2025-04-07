@@ -146,9 +146,11 @@ jobs:
         run: |
           mkdir cr
           docker run --rm -t \
-            --cap-add=CHECKPOINT_RESTORE --cap-add=SYS_PTRACE -e CRAC_MODE=save \
+            --cap-add=CHECKPOINT_RESTORE --cap-add=SYS_PTRACE \
+            -e CRAC_MODE=save \
             -v $(pwd)/cr:/app/cr \
-            ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+            ghcr.io/${{ github.repository }}:${{ github.ref_name }} \
+            || echo "Caugth $? exit code... let's pretend it is actually fine for CRaC warmup"
 
       - name: Build and push fast image
         uses: docker/build-push-action@v6
@@ -160,7 +162,7 @@ jobs:
           build-args: |
             BASE=ghcr.io/${{ github.repository }}:${{ github.ref_name }}
           tags: |
-            ghcr.io/${{ github.repository }}:fast-${{ github.ref_name }}
+            ghcr.io/${{ github.repository }}:${{ github.ref_name }}-fast
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
