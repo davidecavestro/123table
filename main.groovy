@@ -61,17 +61,6 @@ def processArgs = {def args ->
 }
 
 if (['-w', '--warm-up'].intersect(args as List)) {
-    // Thread.currentThread().setContextClassLoader(
-    //     new URLClassLoader(
-    //         new File(System.getenv('DRIVERS_DIR') ?: '/drivers').listFiles(
-    //             [accept: { it.name.endsWith('.jar') }] as FileFilter
-    //         ).with {
-    //             it.collect { it.toURI().toURL() }
-    //         } as URL[],
-    //         getClass().getClassLoader()
-    //     )
-    // )
-
     org.crac.Core.getGlobalContext().register([
         beforeCheckpoint: { def ctx ->
 println 'beforeCheckpoint called'
@@ -83,6 +72,18 @@ println 'beforeCheckpoint called'
                 it.replaceAll(/^["']|["']$/,'')
             }.toArray()
 println "afterRestore called for ${stdinArgs.size()} args"
+
+            Thread.currentThread().setContextClassLoader(
+                new URLClassLoader(
+                    new File(System.getenv('DRIVERS_DIR') ?: '/drivers').listFiles(
+                        [accept: { it.name.endsWith('.jar') }] as FileFilter
+                    ).with {
+                        it.collect { it.toURI().toURL() }
+                    } as URL[],
+                    getClass().getClassLoader()
+                )
+            )
+
             processArgs stdinArgs
         },
     ] as org.crac.Resource)

@@ -9,14 +9,19 @@ export GROOVY_CORE="/app/app.jar:/opt/groovy/lib/groovy-${GROOVY_VERSION}.jar"
 export GROOVY_CLI="/opt/groovy/lib/groovy-cli-commons-${GROOVY_VERSION}.jar"
 export GROOVY_SQL="/opt/groovy/lib/groovy-sql-${GROOVY_VERSION}.jar"
 
-export CLASSPATH="${GROOVY_CORE}:${GROOVY_CLI}:${GROOVY_SQL}:${COMMONS_CLI_JAR}:${CRAC_JAR}:$(printf '%s:' ${DRIVERS_DIR}/*.jar)"
+export CLASSPATH_NO_DRIVERS="${GROOVY_CORE}:${GROOVY_CLI}:${GROOVY_SQL}:${COMMONS_CLI_JAR}:${CRAC_JAR}"
+export CLASSPATH="${CLASSPATH_NO_DRIVERS}:$(printf '%s:' ${DRIVERS_DIR}/*.jar)"
 
 CRAC_PATH="${CRAC_PATH-/app/cr}"
 CRAC_MODE="${CRAC_MODE-}"
 
 echo "CRAC_MODE: $CRAC_MODE"
 if [ "${CRAC_MODE}" = save ]; then
-  java -XX:CRaCMinPid=128 -XX:CPUFeatures=ignore -XX:CRaCCheckpointTo="${CRAC_PATH}" -cp "${CLASSPATH}" main -w
+  java -XX:CRaCMinPid=128 \
+    -XX:CPUFeatures=ignore \
+    -XX:CRaCCheckpointTo="${CRAC_PATH}" \
+    -cp "${CLASSPATH_NO_DRIVERS}" \
+    main -w
 elif [ "${CRAC_MODE}" = restore ]; then
   echo "$@" | \
   java -XX:+UnlockExperimentalVMOptions \
