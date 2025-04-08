@@ -16,9 +16,12 @@ CRAC_MODE="${CRAC_MODE-}"
 
 echo "CRAC_MODE: $CRAC_MODE"
 if [ "${CRAC_MODE}" = save ]; then
-  java -XX:CRaCMinPid=128 -XX:CPUFeatures=generic -XX:CRaCCheckpointTo="${CRAC_PATH}" -cp "${CLASSPATH}" main -w
+  java -XX:CRaCMinPid=128 -XX:CPUFeatures=ignore -XX:CRaCCheckpointTo="${CRAC_PATH}" -cp "${CLASSPATH}" main -w
 elif [ "${CRAC_MODE}" = restore ]; then
-  echo "$@" | java -XX:CRaCRestoreFrom="${CRAC_PATH}"
+  echo "$@" | \
+  java -XX:+UnlockExperimentalVMOptions \
+    -XX:+IgnoreCPUFeatures \
+    -XX:CRaCRestoreFrom="${CRAC_PATH}"
 else
   java -cp "${CLASSPATH}" main "$@"
 fi
