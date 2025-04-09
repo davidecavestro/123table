@@ -24,7 +24,8 @@ if [ "${CRAC_MODE}" = save ]; then
     main -w
 elif [ "${CRAC_MODE}" = restore ]; then
   echo "$@" | \
-  java -XX:+UnlockExperimentalVMOptions \
+  java \
+    -XX:+UnlockExperimentalVMOptions \
     -XX:+IgnoreCPUFeatures \
     -XX:CRaCRestoreFrom="${CRAC_PATH}"
 else

@@ -163,8 +163,8 @@ jobs:
             BASE=ghcr.io/${{ github.repository }}:${{ github.ref_name }}
           tags: |
             ghcr.io/${{ github.repository }}:${{ github.ref_name }}-fast
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=fast
+          cache-to: type=gha,mode=max,scope=fast
 
       - name: Push latest fast image
         uses: docker/build-push-action@v6
