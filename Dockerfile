@@ -21,12 +21,9 @@ RUN sh download.sh org.crac:crac:1.5.0 /app/lib
 
 
 FROM app-base AS build
-#RUN curl -sSL -O https://jdbc.postgresql.org/download/postgresql-42.7.5.jar
-#RUN curl -sSL -O https://download.oracle.com/otn-pub/otn_software/jdbc/237/ojdbc17.jar
-#RUN curl -sSL 'https://go.microsoft.com/fwlink/?linkid=2310307' | tar xvvzf -
-COPY --chown=1000:0 main.groovy /app
-COPY --chown=1000:0 lib.groovy /app
-COPY --chown=1000:0 opts.groovy /app
+COPY --chown=1000:0 *.groovy /app
+# COPY --chown=1000:0 lib.groovy /app
+# COPY --chown=1000:0 opts.groovy /app
 
 WORKDIR /app
 
@@ -64,64 +61,43 @@ ENTRYPOINT [ "sh", "/build/runtests.sh" ]
 FROM tests-base AS tests
 COPY --from=build /app/*.groovy /app
 
-#RUN sh /build/runtests.sh
 
-# RUN \
-#   JACOCO_PATH=$(printf '%s' /build/org.jacoco.agent-*-runtime.jar) \
-#   JAVA_OPTS="-javaagent:${JACOCO_PATH}=destfile=/build/jacoco.exec,classdumpdir=/build/classes,includes=main:lib" \
-#   groovy \
-#     -cp $(printf '%s:' ${DRIVERS_DIR}/*.jar) \
-#     /app/libspec.groovy
-# #RUN groovy -cp $(printf '%s:' ${DRIVERS_DIR}/*.jar) /app/libspec.groovy
-# RUN \
-#   java \ 
-#     -jar $(printf '%s' /build/org.jacoco.cli-*-nodeps.jar) \
-#     report \
-#       /build/jacoco.exec \
-#       --sourcefiles /app \
-#       --classfiles /build/classes \
-#       --xml /build/coverage.xml \
-#       --html /build/coverage \
-#       --csv /build/coverage.csv
-
-# dist stage
-#FROM groovy:${GROOVY_VERSION}-jdk21 as cold
-
-FROM azul/zulu-openjdk:21-jdk-crac-latest AS cold
+FROM azul/zulu-openjdk:21-jdk-crac-latest AS slim
 ARG GROOVY_VERSION
 ENV GROOVY_VERSION=${GROOVY_VERSION}
 
 COPY --from=build /opt/groovy /opt/groovy
 COPY --from=build --chown=1000:0 /app/app.jar /app/app.jar
-COPY --from=build --chown=1000:0 /drivers /drivers
 COPY --from=build --chown=1000:0 /app/lib /app/lib
 
 WORKDIR /app
-#USER 0:0
-#RUN groovyc *.groovy && \
-#    jar cvf app.jar *.class
-
 USER 1000:0
 
 COPY --chown=1000:0 --chmod=750 123t /app/123t
 ENV DRIVERS_DIR=/drivers
 ENV PATH=$PATH:/opt/groovy/bin
-#RUN ./123t --help
-
-#RUN JAVA_OPTS=" -XX:CRaCCheckpointTo=/app/cr" groovy -cp $(printf '%s:' ${DRIVERS_DIR}/*.jar) /app/main.groovy -w || true
 
 ENTRYPOINT [ "/app/123t" ]
-#ENTRYPOINT [ "groovy", "-cp", "$(printf '%s:' ${DRIVERS_DIR}/*.jar)", "/app/main.groovy" ]
 CMD [ "--help" ]
 
-# FROM cold AS warm
-# # ENV JAVA_OPTS=" -XX:CRaCCheckpointTo=cr"
-# #USER 0:0
 
-# #RUN echo "-h" | /app/123t -w
+FROM slim AS cold
+COPY --from=build --chown=1000:0 /drivers /drivers
 
-# RUN export CRAC_MODE=save && echo "-h" | /app/123t
-# # ENV JAVA_OPTS=" -XX:CRaCRestoreFrom=/app/cr"
-# ENV CRAC_MODE=restore
 
-# #FROM warm AS cold
+FROM slim AS fast-slim
+RUN \
+  export CRAC_MODE=save && \
+  echo "-h" | /app/123t \
+  || test $? -eq 137
+ENV CRAC_MODE=restore
+ENV SIDELOAD_DRIVERS=true
+
+
+FROM cold AS fast
+RUN \
+  export CRAC_MODE=save && \
+  echo "-h" | /app/123t \
+  || test $? -eq 137
+ENV CRAC_MODE=restore
+ENV SIDELOAD_DRIVERS=false

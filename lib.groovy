@@ -25,14 +25,8 @@ def getDriverClassName(String url) {
 }
 
 def execute(def opts) {
-    // def sourceDbUrl = cliOptions.'source-db-url'
-    // if (sourceDbUrl.startsWith('jdbc:relique:csv:')){
-    //     println 'Loading CSV JDBC driver'
-    //     Class.forName('org.relique.jdbc.csv.CsvDriver')
-    // }
-    // def sourceDbDriver = cliOptions.'source-db-driver' ?: getDriverClassName(sourceDbUrl)
     opts.tap {
-println "sourceDbUrl: ${sourceDbUrl}"
+// println "sourceDbUrl: ${sourceDbUrl}"
 
         Sql.withInstance(
             sourceDbUrl,
