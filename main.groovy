@@ -45,45 +45,58 @@ def cli = new CliBuilder(
 def processArgs = {def args ->
     if (['-h', '--help'].intersect(args as List)) {
         cli.usage()
-        /* groovylint-disable-next-line SystemExit */
         System.exit(0)
     }
 
     def cliOptions = cli.parse(args)
 
     if (!cliOptions) {
-        /* groovylint-disable-next-line SystemExit */
         System.exit(-1)
     }
 
     new lib().execute(new opts().fromCli(cliOptions))
-// new lib().execute(cliOptions)
 }
 
 if (['-w', '--warm-up'].intersect(args as List)) {
-    org.crac.Core.getGlobalContext().register([
-        beforeCheckpoint: { def ctx ->
-println 'beforeCheckpoint called'
-        },
+    org.crac.Core.globalContext.register([
+        beforeCheckpoint: {},
         afterRestore: { def ctx ->
+            if (System.getenv('SIDELOAD_DRIVERS') == 'true') {
+                def drivers = new File(System.getenv('DRIVERS_DIR') ?: '/drivers').listFiles(
+                    [accept: { it.name.endsWith('.jar') }] as FileFilter
+                ).with {
+                    it.collect { def jar ->
+                        def jarFile = new java.util.jar.JarFile(jar)
+                        def driverClassName = jarFile.getEntry('META-INF/services/java.sql.Driver')?.with {
+                            // pick the first non empty line
+                            /* groovylint-disable-next-line NestedBlockDepth */
+                            def s = jarFile.getInputStream(it)
+                            s.readLines().find { it.trim() }?.trim()
+                        }
+                        [driver: driverClassName, url: jar.toURI().toURL()]
+                    }
+                }
+
+                def driversClassLoader = new URLClassLoader(
+                    drivers*.url as URL[],
+                    this.class.classLoader
+                )
+                Thread.currentThread().setContextClassLoader(driversClassLoader)
+
+                drivers.findAll { it.driver }.collect { it.driver }.each {
+                    def driverClass = driversClassLoader.loadClass(it)
+                    println "Registering driver: ${ it }"
+                    def driverShim = new Wrapper(wrapped: driverClass.newInstance())
+
+                    java.sql.DriverManager.registerDriver(driverShim)
+                }
+            }
             def input = System.in.newReader().readLines().first
             /* groovylint-disable-next-line UnnecessaryCollectCall */
             def stdinArgs = (input =~ /"[^"]*"|'[^']*'|[^\s]+/).collect { 
                 it.replaceAll(/^["']|["']$/,'')
             }.toArray()
-println "afterRestore called for ${stdinArgs.size()} args"
-
-            Thread.currentThread().setContextClassLoader(
-                new URLClassLoader(
-                    new File(System.getenv('DRIVERS_DIR') ?: '/drivers').listFiles(
-                        [accept: { it.name.endsWith('.jar') }] as FileFilter
-                    ).with {
-                        it.collect { it.toURI().toURL() }
-                    } as URL[],
-                    getClass().getClassLoader()
-                )
-            )
-
+// println "afterRestore called for ${stdinArgs.size()} args"
             processArgs stdinArgs
         },
     ] as org.crac.Resource)

@@ -99,83 +99,99 @@ jobs:
           allow_empty_commit: true
           enable_jekyll: true
 
-      # - name: Comment on PR with coverage percentages
-      #   if: ${{ github.event_name == 'pull_request' }}
-      #   run: |
-      #     REPORT=$(<badges/coverage-summary.json)
-      #     COVERAGE=$(jq -r '.coverage' <<< "$REPORT")%
-      #     BRANCHES=$(jq -r '.branches' <<< "$REPORT")%
-      #     NEWLINE=$'\n'
-      #     BODY="## JaCoCo Test Coverage Summary Statistics${NEWLINE}* __Coverage:__ ${COVERAGE}${NEWLINE}* __Branches:__ ${BRANCHES}"
-      #     gh pr comment ${{github.event.pull_request.number}} -b "${BODY}"
-      #   continue-on-error: true
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # - name: Publish Test Results
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: test-report
-      #     path: target/tests.html
-      #   if: always()  # Ensures reports are published even if tests fail
-
       - name: Build and push image
+        id: cold_img_build
         uses: docker/build-push-action@v6
         with:
           context: .
           platforms: linux/amd64,linux/arm64
+          target: cold
           push: true
           tags: |
             ghcr.io/${{ github.repository }}:${{ github.ref_name }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Push latest image
         uses: docker/build-push-action@v6
         with:
           context: .
+          target: cold
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
             ghcr.io/${{ github.repository }}:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # cache-from: type=registry,ref:${{ steps.cold_img_build.outputs.metadata.ref }}
         if: startsWith(github.ref, 'refs/tags/')
 
-      - name: Fast image warmup
-        run: |
-          mkdir cr
-          docker run --rm -t \
-            -e CRAC_MODE=save \
-            -v $(pwd)/cr:/app/cr \
-            ghcr.io/${{ github.repository }}:${{ github.ref_name }} \
-            || echo "Caugth $? exit code... let's pretend it is actually fine for CRaC warmup"
-
-      - name: Build and push fast image
+      - name: Build and push slim image
+        id: slim_img_build
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: Dockerfile-fast
+          target: slim
           platforms: linux/amd64,linux/arm64
           push: true
-          build-args: |
-            BASE=ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+          tags: |
+            ghcr.io/${{ github.repository }}:${{ github.ref_name }}-slim
+          # cache-from: type=registry,ref:${{ steps.cold_img_build.outputs.metadata.ref }}
+
+      - name: Push latest slim image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: slim
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}:slim-latest
+          # cache-from: type=registry,ref:${{ steps.slim_img_build.outputs.metadata.ref }}
+        if: startsWith(github.ref, 'refs/tags/')
+
+      - name: Build and push fast image
+        id: fast_img_build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: fast
+          platforms: linux/amd64
+          push: true
           tags: |
             ghcr.io/${{ github.repository }}:${{ github.ref_name }}-fast
-          cache-from: type=gha
-          cache-to: type=gha,mode=max,scope=fast
+          # cache-from: type=registry,ref:${{ steps.cold_img_build.outputs.metadata.ref }}
 
       - name: Push latest fast image
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: Dockerfile-fast
-          platforms: linux/amd64,linux/arm64
+          target: fast
+          platforms: linux/amd64
           push: true
           tags: |
             ghcr.io/${{ github.repository }}:fast-latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # cache-from: type=registry,ref:${{ steps.fast_img_build.outputs.metadata.ref }}
+        if: startsWith(github.ref, 'refs/tags/')
+
+      - name: Build and push fast-slim image
+        id: fastslim_img_build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: fast-slim
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}:${{ github.ref_name }}-fast-slim
+          # cache-from: type=registry,ref:${{ steps.cold_img_build.outputs.metadata.ref }}
+
+      - name: Push latest fast-slim image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: fast-slim
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}:fast-slim-latest
+          # cache-from: type=registry,ref:${{ steps.fastslim_img_build.outputs.metadata.ref }}
         if: startsWith(github.ref, 'refs/tags/')
 
   create-release:
