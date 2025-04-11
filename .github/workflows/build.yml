@@ -146,7 +146,6 @@ jobs:
         run: |
           mkdir cr
           docker run --rm -t \
-            --cap-add=CHECKPOINT_RESTORE --cap-add=SYS_PTRACE \
             -e CRAC_MODE=save \
             -v $(pwd)/cr:/app/cr \
             ghcr.io/${{ github.repository }}:${{ github.ref_name }} \
@@ -163,7 +162,7 @@ jobs:
             BASE=ghcr.io/${{ github.repository }}:${{ github.ref_name }}
           tags: |
             ghcr.io/${{ github.repository }}:${{ github.ref_name }}-fast
-          cache-from: type=gha,scope=fast
+          cache-from: type=gha
           cache-to: type=gha,mode=max,scope=fast
 
       - name: Push latest fast image

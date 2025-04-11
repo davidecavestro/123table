@@ -87,7 +87,6 @@ COPY --from=build /app/*.groovy /app
 # dist stage
 #FROM groovy:${GROOVY_VERSION}-jdk21 as cold
 
-# FROM ghcr.io/bell-sw/liberica-runtime-container:jdk-crac-glibc AS cold
 FROM azul/zulu-openjdk:21-jdk-crac-latest AS cold
 ARG GROOVY_VERSION
 ENV GROOVY_VERSION=${GROOVY_VERSION}
