@@ -25,14 +25,8 @@ def getDriverClassName(String url) {
 }
 
 def execute(def opts) {
-    // def sourceDbUrl = cliOptions.'source-db-url'
-    // if (sourceDbUrl.startsWith('jdbc:relique:csv:')){
-    //     println 'Loading CSV JDBC driver'
-    //     Class.forName('org.relique.jdbc.csv.CsvDriver')
-    // }
-    // def sourceDbDriver = cliOptions.'source-db-driver' ?: getDriverClassName(sourceDbUrl)
-<span class="nc" id="L34">    opts.tap {</span>
-println &quot;sourceDbUrl: ${sourceDbUrl}&quot;
+<span class="nc" id="L28">    opts.tap {</span>
+// println &quot;sourceDbUrl: ${sourceDbUrl}&quot;
 
         Sql.withInstance(
             sourceDbUrl,
@@ -100,7 +94,7 @@ println &quot;sourceDbUrl: ${sourceDbUrl}&quot;
 }
 
 def toBatchParams(def targetFields, def row) {
-<span class="nc" id="L103">    targetFields.collect {</span>
+<span class="nc" id="L97">    targetFields.collect {</span>
         row[it.name]
     }
 }
