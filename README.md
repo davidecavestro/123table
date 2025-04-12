@@ -60,7 +60,7 @@ of build tools.
 
 ### Basic usage
 
-Given a CSV file named _table.csv_ in the current directory, run
+Given a CSV file named _foo.csv_ in the current directory, run
 
 ```bash
 docker run --rm -it \
@@ -69,9 +69,11 @@ docker run --rm -it \
   -create \
   -url jdbc:sqlite:/data/foo.db
 ```
-to load it into a newly created table of a temporary in-memory db.
+to load it into a newly created table of a sqlite db.
+<br>
 Replace the `-url` value with a property JDBC url for your target db. 
-
+<br>
+Use the `--help` flag to get the full list of options.
 
 ### How to build locally
 
