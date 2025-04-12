@@ -12,9 +12,9 @@ and insert the rows to a table on any JDBC compatible database.
 
 ## Project status
 
-Beta testing: the implemented features seems to work as expected.
+Beta testing: the implemented features seem to work as expected.
 <br>
-See the roadmap below for missing features.
+See the roadmap below or open a PR for missing features.
 
 ## Image flavours
 
@@ -41,8 +41,8 @@ Currently packaged drivers cover the following data sources:
 - PostgreSQL
 - sqlite
 
-In case of need for other drivers, simply mount a volume or bind a local
-folder containing the jars.
+If other drivers become needed, just mount a volume or bind-mount
+a local folder containing the jars.
 
 
 ## Motivation
