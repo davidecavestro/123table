@@ -62,7 +62,7 @@ FROM tests-base AS tests
 COPY --from=build /app/*.groovy /app
 
 
-FROM azul/zulu-openjdk:21-jdk-crac-latest AS slim
+FROM azul/zulu-openjdk:21-jre-crac-latest AS slim
 ARG GROOVY_VERSION
 ENV GROOVY_VERSION=${GROOVY_VERSION}
 
@@ -79,10 +79,12 @@ ENV PATH=$PATH:/opt/groovy/bin
 
 ENTRYPOINT [ "/app/123t" ]
 CMD [ "--help" ]
+LABEL org.opencontainers.image.description "Driver-less image for 123table, a containerized command line tool that makes it easy to load rows into a database table. "
 
 
 FROM slim AS cold
 COPY --from=build --chown=1000:0 /drivers /drivers
+LABEL org.opencontainers.image.description "Image packaged with some JDBC drivers for 123table, a containerized command line tool that makes it easy to load rows into a database table. "
 
 
 FROM slim AS fast-slim
@@ -92,6 +94,7 @@ RUN \
   || test $? -eq 137
 ENV CRAC_MODE=restore
 ENV SIDELOAD_DRIVERS=true
+LABEL org.opencontainers.image.description "Pre-warmed driver-less image for 123table, a containerized command line tool that makes it easy to load rows into a database table. "
 
 
 FROM cold AS fast
@@ -101,3 +104,4 @@ RUN \
   || test $? -eq 137
 ENV CRAC_MODE=restore
 ENV SIDELOAD_DRIVERS=false
+LABEL org.opencontainers.image.description "Pre-warmed image with JDBC drivers for 123table, a containerized command line tool that makes it easy to load rows into a database table. "

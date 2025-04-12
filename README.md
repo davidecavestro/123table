@@ -7,12 +7,39 @@
 
 123table is a containerized command line tool that makes it easy to load rows into a database table.
 
-123table is designed to read data from a db table or from a CSV (using a JDBC driver)
-and insert it to any JDBC compatible database.
+_123table_ is designed to read data from a db table or from a CSV (using a JDBC driver)
+and insert the rows to a table on any JDBC compatible database.
 
 ## Project status
 
-Early alpha, not working yet.
+Beta testing: the implemented features are working as expected.
+
+
+## Image flavours
+
+_123table_ is packaged into flavours for specific needs
+
+Flavour   | Suffix    | Pre-warmed ! Startup | JDBC drivers | Weight
+--------- | --------- | ---------- | ------- | ------------ | ------
+Generic   |           | No         | Slow    | Included     | Heavy
+Slim      | slim      | No         | Slow    | -            | Light
+Fast      | fast      | Yes        | Fast    | Included     | Heavy
+Fast-slim | fast-slim | Yes        | Fast    | -            | Light
+
+Please note that the fast flavours leverage features from the https://crac.org project.
+
+
+The included drivers are available within the `/drivers` folder.
+
+Currently pacakged drivers cover the following data sources:
+- csv
+- h2
+- MS SQLserver
+- Oracle
+- PostgreSQL
+- sqlite
+
+In case of need for other drivers, simply mount a volume or bind a local folder containing the jars.
 
 
 ## Motivation
@@ -33,13 +60,14 @@ Given a CSV file named _table.csv_ in the current directory, run
 
 ```bash
 docker run --rm -it \
-  -v $(pwd):/data ghcr.io/davidecavestro/123table:latest \
-  -url jdbc:h2:mem:testdb \
-  -table mytable \
-  -create
+  -v $(pwd):/data ghcr.io/davidecavestro/123table:main-fast \
+  -stable foo \
+  -create \
+  -url jdbc:sqlite:/data/foo.db
 ```
 to load it into a newly created table of a temporary in-memory db.
 Replace the `-url` value with a property JDBC url for your target db. 
+
 
 ### How to build locally
 
