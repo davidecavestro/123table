@@ -28,12 +28,12 @@ _123table_ is packaged into flavours for specific needs
 | Fast-slim | `fast-slim` | Yes        | Fast    | -            | Light  |
 
 
-Please note that the fast flavours leverage features from the https://crac.org project.
-
+Where the *fast* flavours leverage features from the https://crac.org project
+in order to speed-up the image boot.
 
 The included drivers are available within the `/drivers` folder.
-
-Currently pacakged drivers cover the following data sources:
+<br>
+Currently packaged drivers cover the following data sources:
 - csv
 - h2
 - MS SQLserver
