@@ -7,8 +7,8 @@
 
 123table is a containerized command line tool that makes it easy to load rows into a database table.
 
-_123table_ is designed to read data from a db table or from a CSV (using a JDBC driver)
-and insert the rows to a table on any JDBC compatible database.
+_123table_ reads the rows from a db table or from a CSV (using a JDBC driver)
+and insert them into a table in any JDBC compatible database.
 
 ## Project status
 
@@ -29,7 +29,7 @@ _123table_ is packaged into flavours for specific needs
 
 
 Where the *fast* flavours leverage features from the https://crac.org project
-in order to speed-up the image boot.
+in order to speed-up the container boot.
 
 The included drivers are available within the `/drivers` folder.
 <br>
@@ -42,7 +42,7 @@ Currently packaged drivers cover the following data sources:
 - sqlite
 
 If other drivers become needed, just mount a volume or bind-mount
-a local folder containing the jars.
+a local folder containing the appropriate jars.
 
 
 ## Motivation
@@ -69,9 +69,9 @@ docker run --rm -it \
   -create \
   -url jdbc:sqlite:/data/foo.db
 ```
-to load it into a newly created *foo* table of a sqlite db.
+to load its rows into a newly created *foo* table of a sqlite db.
 <br>
-Replace the `-url` value with a property JDBC url for your target db. 
+Replace the `-url` value with a proper JDBC url for your target db. 
 <br>
 Use the `--help` flag to get the full list of options.
 
