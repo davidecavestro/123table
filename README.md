@@ -69,7 +69,7 @@ docker run --rm -it \
   -create \
   -url jdbc:sqlite:/data/foo.db
 ```
-to load it into a newly created table of a sqlite db.
+to load it into a newly created *foo* table of a sqlite db.
 <br>
 Replace the `-url` value with a property JDBC url for your target db. 
 <br>
