@@ -12,19 +12,21 @@ and insert the rows to a table on any JDBC compatible database.
 
 ## Project status
 
-Beta testing: the implemented features are working as expected.
-
+Beta testing: the implemented features seems to work as expected.
+<br>
+See the roadmap below for missing features.
 
 ## Image flavours
 
 _123table_ is packaged into flavours for specific needs
 
-Flavour   | Suffix    | Pre-warmed ! Startup | JDBC drivers | Weight
---------- | --------- | ---------- | ------- | ------------ | ------
-Generic   |           | No         | Slow    | Included     | Heavy
-Slim      | slim      | No         | Slow    | -            | Light
-Fast      | fast      | Yes        | Fast    | Included     | Heavy
-Fast-slim | fast-slim | Yes        | Fast    | -            | Light
+| Flavour   | Suffix      | Pre-warmed | Startup | JDBC drivers | Weight |
+| --------- | ----------- |:----------:| ------- | ------------ | ------ |
+| Generic   |             | No         | Slow    | Included     | Heavy  |
+| Slim      | `slim`      | No         | Slow    | -            | Light  |
+| Fast      | `fast`      | Yes        | Fast    | Included     | Heavy  |
+| Fast-slim | `fast-slim` | Yes        | Fast    | -            | Light  |
+
 
 Please note that the fast flavours leverage features from the https://crac.org project.
 
@@ -39,16 +41,18 @@ Currently pacakged drivers cover the following data sources:
 - PostgreSQL
 - sqlite
 
-In case of need for other drivers, simply mount a volume or bind a local folder containing the jars.
+In case of need for other drivers, simply mount a volume or bind a local
+folder containing the jars.
 
 
 ## Motivation
 
 Beyond the obvious need to load rows into a db table, this project began
-to experiment as a developer with the feasibility and limitations - in
-2025 - of using only Groovy scripts, a Dockerfile and some bash as a
-minimalist approach to developing a small CLI tool with some automated
-test coverage without the bells and whistles of build tools.
+to **experiment as a developer** with the feasibility and limitations - in
+2025 - of using only Groovy scripts, a Dockerfile and some bash as **a
+minimalist approach to developing a small CLI tool** with some automated
+test coverage and contnuous integration, but without the bells and whistles
+of build tools.
 
 
 ## HOWTOs
