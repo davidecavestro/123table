@@ -11,7 +11,7 @@ println "PID = ${ProcessHandle.current().pid()}"
 
 def cli = new CliBuilder(
     header: '123Table is a command line tool that makes it easy to load rows into a database table.',
-    usage:'123t [options] -url jdbc:h2:mem:testdb -table mytable',
+    usage:'123t [options] -url jdbc:sqlite:/data/foo.db -stable foo -create',
     width: -1
 ).tap {
     surl(
