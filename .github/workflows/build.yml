@@ -221,7 +221,10 @@ jobs:
           release_name: v${{ github.ref_name }}
           body: |
             Container images for this release:
-              - GitHub Container Registry: `ghcr.io/${{ github.repository }}:${{ github.ref_name }}`
+              - Generic: `ghcr.io/${{ github.repository }}:${{ github.ref_name }}`
+              - Slim: `ghcr.io/${{ github.repository }}:${{ github.ref_name }}-slim`
+              - Fast: `ghcr.io/${{ github.repository }}:${{ github.ref_name }}-fast`
+              - Fast and slim: `ghcr.io/${{ github.repository }}:${{ github.ref_name }}-fast-slim`
             ${{ steps.changelog.outputs.changes }}
           draft: false
           prerelease: false

@@ -20,12 +20,12 @@ See the roadmap below or open a PR for missing features.
 
 _123table_ is packaged into flavours for specific needs
 
-| Flavour   | Suffix      | Pre-warmed | Startup | JDBC drivers | Weight |
-| --------- | ----------- |:----------:| ------- | ------------ | ------ |
-| Generic   |             | No         | Slow    | Included     | Heavy  |
-| Slim      | `slim`      | No         | Slow    | -            | Light  |
-| Fast      | `fast`      | Yes        | Fast    | Included     | Heavy  |
-| Fast-slim | `fast-slim` | Yes        | Fast    | -            | Light  |
+| Flavour       | Suffix      | Pre-warmed | Startup | JDBC drivers | Weight |
+| ------------- | ----------- |:----------:| ------- | ------------ | ------ |
+| Generic       |             | No         | Slow    | Included     | Heavy  |
+| Slim          | `slim`      | No         | Slow    | -            | Light  |
+| Fast          | `fast`      | Yes        | Fast    | Included     | Heavy  |
+| Fast and slim | `fast-slim` | Yes        | Fast    | -            | Light  |
 
 
 Where the *fast* flavours leverage features from the https://crac.org project
