@@ -3,6 +3,7 @@
 ## User Guide
 
 [Getting Started](guide/getting-started/)
+[Mapping fields](guide/getting-started/mapper.html)
 
 ## Test Reports
 
