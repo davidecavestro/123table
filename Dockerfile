@@ -17,6 +17,8 @@ RUN sh download.sh net.sourceforge.csvjdbc:csvjdbc:1.0.46
 RUN sh download.sh com.oracle.database.jdbc:ojdbc11:23.7.0.25.01
 RUN sh download.sh com.h2database:h2:2.3.232
 RUN sh download.sh org.xerial:sqlite-jdbc:3.49.1.0
+RUN sh download.sh com.mysql:mysql-connector-j:9.2.0
+
 RUN sh download.sh org.crac:crac:1.5.0 /app/lib
 
 

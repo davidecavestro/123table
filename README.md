@@ -37,6 +37,7 @@ Currently packaged drivers cover the following data sources:
 - csv
 - h2
 - MS SQLserver
+- MySQL
 - Oracle
 - PostgreSQL
 - sqlite
