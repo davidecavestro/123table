@@ -1,19 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>lib.groovy</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">default</a> &gt; <span class="el_source">lib.groovy</span></div><h1>lib.groovy</h1><pre class="source lang-java linenums">// @Grab('net.sourceforge.csvjdbc:csvjdbc:1.0.46')
-
-import groovy.sql.Sql
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>lib.groovy</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">default</a> &gt; <span class="el_source">lib.groovy</span></div><h1>lib.groovy</h1><pre class="source lang-java linenums">import groovy.sql.Sql
 import java.sql.Driver
+import java.time.*
+import java.time.format.*
 
 def getDriverClassName(String url) {
-<span class="pc bpc" id="L7" title="2 of 4 branches missed.">    if (!url) return null</span>
-
-<span class="fc" id="L9">    def drivers</span>
-
     // Register drivers and get the first one that accepts the URL
-<span class="pc bpc" id="L12" title="2 of 4 branches missed.">    if (!drivers) {</span>
-<span class="fc" id="L13">        drivers = ServiceLoader.load(Driver)</span>
-    }
+<span class="fc" id="L8">    def drivers = ServiceLoader.load(Driver)</span>
 
-<span class="fc" id="L16">    def driver = drivers.find { driver -&gt;</span>
+<span class="fc" id="L10">    def driver = drivers.find { driver -&gt;</span>
         try {
             driver.acceptsURL(url)
         } catch (e) {
@@ -21,11 +15,11 @@ def getDriverClassName(String url) {
         }
     }
 
-<span class="fc" id="L24">    driver?.getClass()?.name</span>
+<span class="fc" id="L18">    driver?.getClass()?.name</span>
 }
 
 def execute(def opts) {
-<span class="nc" id="L28">    opts.tap {</span>
+<span class="fc" id="L22">    opts.tap {</span>
 // println &quot;sourceDbUrl: ${sourceDbUrl}&quot;
 
         Sql.withInstance(
@@ -33,30 +27,20 @@ def execute(def opts) {
             sourceDbUser,
             sourceDbPassword,
         ) { def sourceDb -&gt;
-            def targetFields = sourceDb.firstRow(sourceQuery)?.collect { def name, def value -&gt;
-                [name: name, type: 'VARCHAR']
-            }
-            // def targetFields = sourceDb.query(sourceQuery) {def rs -&gt;
-            //     def ret
-            //     if (rs.next()){
-            //         ret = rs.getMetaData()?.with { def md -&gt;
-            //             (1..md.columnCount).collectEntries { [name: md.getColumnName(it)] }
-            //         }
-            //         if (!ret){
-            //             ret = 
-            //         }
-            //     }
-            //     ret
-            // }
-            if (!targetFields) {
-                println 'No source row found (empty table?)'
-                return
+            def targetFields
+            if (opts.mapper){
+                targetFields = mapTargetFields(opts.mapper)
+            } else { // no mapping info
+                def aRow = sourceDb.firstRow(sourceQuery)
+                targetFields = aRow.collect { def name, def value -&gt;
+                    [name: name, type: 'VARCHAR', toValue: { def row -&gt; row[name] }]
+                }
             }
 
             println &quot;Using targetFields: ${targetFields}&quot; 
             def targetQuery = &quot;&quot;&quot;
                 INSERT INTO ${targetTable}
-                (${ targetFields.collect { it.name }.join(', ') })
+                (${ targetFields*.name.join(', ') })
                 VALUES
                 (${ targetFields.collect { '?' }.join(', ') })
             &quot;&quot;&quot; as String
@@ -67,6 +51,9 @@ def execute(def opts) {
                 targetDbPassword,
             ) { def targetDb -&gt;
                 if (createTable) {
+                    if (!targetFields) {
+                        throw new RuntimeException('Cannot create a table without any knowledge of the fields.')
+                    }
                     println 'Creating table...'
                     targetDb.execute &quot;&quot;&quot;
                         CREATE TABLE ${targetTable}
@@ -94,8 +81,43 @@ def execute(def opts) {
 }
 
 def toBatchParams(def targetFields, def row) {
-<span class="nc" id="L97">    targetFields.collect {</span>
-        row[it.name]
+<span class="fc" id="L84">    targetFields*.toValue(row)</span>
+}
+
+def mapTargetFields(def mapper) {
+<span class="fc" id="L88">    def shell = new GroovyShell()</span>
+<span class="fc" id="L89">    def closures = [:]</span>
+
+<span class="fc" id="L91">    mapper.collect { def mapping -&gt;</span>
+        def srcField = mapping.from ?: mapping.name
+        def toValue = { def row -&gt;
+            def orig = row[srcField]
+            def expr = mapping.expr
+            def calc = mapping.calc
+            if (expr || calc) {
+                // cache the closure
+                def closure = closures[srcField]
+                if (!closure) {
+                    if (expr) { // wrap the parsed expression into a closure
+                        def script = new GroovyShell(new Binding(orig: orig, row: row)).parse(expr)
+                        closure = { _, __ -&gt; script.run() }
+                    } else { // parse the closure
+                        closure = shell.evaluate(calc)
+                    }
+                    closures[srcField] = closure
+                }
+                closure(orig, row)
+            } else {
+                orig
+            }
+        }
+
+        [
+            name: mapping.to ?: mapping.name,
+            type: mapping.type ?: 'VARCHAR',
+            toValue: toValue
+        ]
     }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
