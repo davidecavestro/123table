@@ -40,41 +40,54 @@ def cli = new CliBuilder(
     truncate(longOpt: 'truncate-table', 'Truncate the target table')
     dry(longOpt: 'dry-run', 'Just mimic write actions, avoid making any changes to the target db')
     h(longOpt: 'help', 'Usage Information')
+
+    mapper(
+        longOpt: 'mapper', 'Field.mapper: json list of objects structured as: ' +
+        'from: <source field> '+
+        'to: <target field> ' +
+        'name: <alternative to from/to> ' +
+        'type: used for table auto create ' +
+        'expr: simple expression returning the value (a groovy expression with access to "orig" value)' +
+        'calc: calculator returning the value. A groovy closure i.e. { def orig, def row -> orig?.toLowerCase() }',
+        args: 1
+    )
+    mfile(
+        longOpt: 'mapper-file', 'Json file for field.mapping: see the "mapper" flag',
+        args: 1
+    )
 }
 
 def processArgs = {def args ->
     if (['-h', '--help'].intersect(args as List)) {
         cli.usage()
+        /* groovylint-disable-next-line SystemExit */
         System.exit(0)
     }
 
     def cliOptions = cli.parse(args)
 
     if (!cliOptions) {
+        /* groovylint-disable-next-line SystemExit */
         System.exit(-1)
     }
 
-    new lib().execute(new opts().fromCli(cliOptions))
+    new lib().execute(new Opts().fromCli(cliOptions))
 }
 
 if (['-w', '--warm-up'].intersect(args as List)) {
     org.crac.Core.globalContext.register([
-        beforeCheckpoint: {},
+        beforeCheckpoint: { },
         afterRestore: { def ctx ->
             if (System.getenv('SIDELOAD_DRIVERS') == 'true') {
                 def drivers = new File(System.getenv('DRIVERS_DIR') ?: '/drivers').listFiles(
                     [accept: { it.name.endsWith('.jar') }] as FileFilter
-                ).with {
-                    it.collect { def jar ->
-                        def jarFile = new java.util.jar.JarFile(jar)
-                        def driverClassName = jarFile.getEntry('META-INF/services/java.sql.Driver')?.with {
-                            // pick the first non empty line
-                            /* groovylint-disable-next-line NestedBlockDepth */
-                            def s = jarFile.getInputStream(it)
-                            s.readLines().find { it.trim() }?.trim()
-                        }
-                        [driver: driverClassName, url: jar.toURI().toURL()]
-                    }
+                ).collect { def jar ->
+                    def jarFile = new java.util.jar.JarFile(jar)
+                    def svcFile = jarFile.getEntry('META-INF/services/java.sql.Driver')
+                    // pick the first non empty line
+                    def driverClassName = jarFile.getInputStream(svcFile).readLines().find { it.trim() }?.trim()
+
+                    [driver: driverClassName, url: jar.toURI().toURL()]
                 }
 
                 def driversClassLoader = new URLClassLoader(
@@ -83,7 +96,7 @@ if (['-w', '--warm-up'].intersect(args as List)) {
                 )
                 Thread.currentThread().setContextClassLoader(driversClassLoader)
 
-                drivers.findAll { it.driver }.collect { it.driver }.each {
+                drivers.findAll { it.driver }*.driver.each {
                     def driverClass = driversClassLoader.loadClass(it)
                     println "Registering driver: ${ it }"
                     def driverShim = new Wrapper(wrapped: driverClass.newInstance())

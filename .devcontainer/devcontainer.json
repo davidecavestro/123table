@@ -10,7 +10,8 @@
 			"extensions": [
 				"NicolasVuillamy.vscode-groovy-lint",
 				"ms-azuretools.vscode-docker",
-				"eamodio.gitlens"
+				"eamodio.gitlens",
+				"github.vscode-github-actions"
 			]
 		}
 	}

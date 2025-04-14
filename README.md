@@ -96,11 +96,11 @@ docker run --rm -it -v ./target:/target 123table-tests
 
 - [X] Feat: copy from CSV
 - [X] Feat: plain copy - same name and type
-- [ ] Feat: field name remapping
+- [x] Feat: field name remapping
 - [ ] Feat: field type remapping (value computed by target type)
-- [ ] Feat: field value remapping (value computed by custom code)
-- [ ] Feat: support for additional/custom JDBC drivers
-- [ ] Feat: copy from db
+- [X] Feat: field value remapping (value computed by custom code)
+- [x] Feat: support for additional/custom JDBC drivers
+- [x] Feat: copy from db
 - [ ] CI: code coverage > 90%
 - [ ] CI: automatic tests on push
 - [ ] CI: show test coverage
