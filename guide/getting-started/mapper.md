@@ -1,4 +1,4 @@
-[back](./)
+[Up](./)
 
 # Configuring the field mapper
 
@@ -28,8 +28,8 @@ supports the following properties:
 <dt>name</dt>
 <dd>
     Common name for both source and target field.
-    An alternative to `from`/`to` when the name is the same but
-    the value should be computed
+    An alternative to <code>from</code>/<code>to</code> when
+    the name is the same but the value should be computed
 </dd>
 <dt>expr</dt>
 <dd>
@@ -37,9 +37,9 @@ supports the following properties:
     from the original one (available as `orig`).
     <br>
     i.e.
-```
+<pre>
 orig.toLowerCase()
-```
+</pre>
 </dd>
 <dt>calc</dt>
 <dd>
@@ -47,11 +47,11 @@ orig.toLowerCase()
     from the original one (available as `orig`).
     <br>
     i.e.
-```
+<pre>
 { def orig, def row ->
     "${orig.toLowerCase()} (${row.surname})"
 }
-```
+</pre>
 </dd>
 </dl>
 
@@ -59,15 +59,17 @@ orig.toLowerCase()
 
 A mapper may be passed as
 <ul>
-<li>`--mapper` flag or `MAPPER` env var: a json value (useful mainly for small mappers)
-<li>`--mapper-file` flag or `MAPPER_FILE` env var: the path to a json file
-(provided that it is available to the container via bind mount or a volume)
+<li><code>--mapper</code> flag or <code>MAPPER</code> env var a json
+value (useful mainly for small mappers)
+<li><code>--mapper-file</code> flag or <code>MAPPER_FILE</code> env
+var: the path to a json file (provided that it is available to the
+container via bind mount or a volume)
 </ul>
 
 Example:
-```bash
+<pre>
 docker run ... \
   --mapper '[{ "name": "surname", "expr": "orig.capitalize()" }]
-```
+</pre>
 
-[back](./)
+[Up](./)
