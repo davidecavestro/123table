@@ -1,3 +1,5 @@
+[back](./)
+
 # Configuring the field mapper
 
 Though *123table* is not an ETL tool, it supports remapping
@@ -67,3 +69,5 @@ Example:
 docker run ... \
   --mapper '[{ "name": "surname", "expr": "orig.capitalize()" }]
 ```
+
+[back](./)
