@@ -1,6 +1,4 @@
-[Home](/123table)
--
-[Up](./)
+[Home](/123table) - [Up](./)
 
 # Getting started with 123table
 
@@ -37,5 +35,3 @@ docker run --rm -it \
 
 Consider using a file for complex mappings.
 See [Mapping fields](/123table/guide/getting-started/mapper.html) for more details.
-
-[Home](/123table)
