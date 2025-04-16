@@ -1,6 +1,6 @@
-[Home](/)
+[Home](/123table)
 # Getting started with 123table
 
 TBD
 
-[Home](/)
+[Home](/123table)
