@@ -10,10 +10,8 @@ and insert them into a table in any JDBC compatible database.
 [Mapping fields](guide/getting-started/mapper.html) documents how you can
 remap remap field names and how field values can be dynamically computed. 
 
-## Test Reports
+## Development
 
 [View Test Reports](tests.html) from build automation on main branch.
-
-## Test Coverage
 
 [View Coverage Reports](coverage/) from build automation on main branch.

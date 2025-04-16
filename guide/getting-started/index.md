@@ -1,4 +1,7 @@
 [Home](/123table)
+-
+[Up](./)
+
 # Getting started with 123table
 
 ## Copy CSV contents to a new table
