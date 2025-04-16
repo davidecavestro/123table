@@ -1,5 +1,4 @@
-[Home](/123table)
-[Up](./)
+[Home](/123table) - [Up](./)
 
 # Configuring the field mapper
 
@@ -35,7 +34,7 @@ supports the following properties:
 <dt>expr</dt>
 <dd>
     A simple groovy expression (aka formula) deriving a value
-    from the original one (available as `orig`).
+    from the original one (available as <code>orig</code>).
     <br>
     i.e.
 <pre>
@@ -45,7 +44,7 @@ orig.toLowerCase()
 <dt>calc</dt>
 <dd>
     A calculator (a groovy closure) (aka formula) deriving a value
-    from the original one (available as `orig`).
+    from the original one (available as <code>orig</code>).
     <br>
     i.e.
 <pre>
@@ -72,5 +71,3 @@ Example:
 docker run ... \
   --mapper '[{ "name": "surname", "expr": "orig.capitalize()" }]
 </pre>
-
-[Up](./)
