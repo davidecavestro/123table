@@ -67,7 +67,7 @@ container via bind mount or a volume)
 </ul>
 
 Example:
-<pre>
+```bash
 docker run ... \
   --mapper '[{ "name": "surname", "expr": "orig.capitalize()" }]
-</pre>
+```
