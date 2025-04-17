@@ -60,13 +60,14 @@ orig.toLowerCase()
 A mapper may be passed as
 <ul>
 <li><code>--mapper</code> flag or <code>MAPPER</code> env var a json
-value (useful mainly for small mappers)
+value (useful mainly for small mappers)</li>
 <li><code>--mapper-file</code> flag or <code>MAPPER_FILE</code> env
 var: the path to a json file (provided that it is available to the
-container via bind mount or a volume)
+container via bind mount or a volume)</li>
 </ul>
 
 Example:
+
 ```bash
 docker run ... \
   --mapper '[{ "name": "surname", "expr": "orig.capitalize()" }]
