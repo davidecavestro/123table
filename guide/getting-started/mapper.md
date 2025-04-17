@@ -47,11 +47,11 @@ orig.toLowerCase()
     from the original one (available as <code>orig</code>).
     <br>
     i.e.
-```
+<pre>
 { def orig, def row ->
     "${orig.toLowerCase()} (${row.surname})"
 }
-```
+</pre>
 </dd>
 </dl>
 
