@@ -1,4 +1,4 @@
-[Home](/123table) - [Up](./)
+[Home](/123table)
 
 # Getting started with 123table
 
