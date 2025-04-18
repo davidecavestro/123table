@@ -3,52 +3,52 @@
 
 @import "{{ site.theme }}";
 
-// Primary colors
-$primary-color: #2196F3;
-$secondary-color: #03A9F4;
-$background-color: #FAFBFC;
-$text-color: #24292E;
+// // Primary colors
+// $primary-color: #2196F3;
+// $secondary-color: #03A9F4;
+// $background-color: #FAFBFC;
+// $text-color: #24292E;
 
-// Apply the colors
-body {
-  background-color: $background-color;
-  color: $text-color;
-}
+// // Apply the colors
+// body {
+//   background-color: $background-color;
+//   color: $text-color;
+// }
 
-a {
-  color: $primary-color;
+// a {
+//   color: $primary-color;
   
-  &:hover {
-    color: $secondary-color;
-  }
-}
+//   &:hover {
+//     color: $secondary-color;
+//   }
+// }
 
-h1, h2, h3, h4, h5, h6 {
-  color: $primary-color;
-}
+// h1, h2, h3, h4, h5, h6 {
+//   color: $primary-color;
+// }
 
-.site-header {
-  background-color: $primary-color;
-  color: white;
-}
+// .site-header {
+//   background-color: $primary-color;
+//   color: white;
+// }
 
-.nav-item.active {
-  border-bottom-color: $secondary-color;
-}
+// .nav-item.active {
+//   border-bottom-color: $secondary-color;
+// }
 
-.post-content {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-}
+// .post-content {
+//   max-width: 800px;
+//   margin: 0 auto;
+//   padding: 20px;
+// }
 
-.code-highlight {
-  background-color: rgba(27, 31, 35, 0.05);
-  border-radius: 3px;
-}
+// .code-highlight {
+//   background-color: rgba(27, 31, 35, 0.05);
+//   border-radius: 3px;
+// }
 
-blockquote {
-  border-left: 4px solid $secondary-color;
-  margin: 0;
-  padding-left: 1rem;
-}
+// blockquote {
+//   border-left: 4px solid $secondary-color;
+//   margin: 0;
+//   padding-left: 1rem;
+// }
