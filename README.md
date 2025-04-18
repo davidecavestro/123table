@@ -65,7 +65,7 @@ Given a CSV file named _foo.csv_ in the current directory, run
 
 ```bash
 docker run --rm -it \
-  -v $(pwd):/data ghcr.io/davidecavestro/123table:main-fast \
+  -v $(pwd):/data ghcr.io/davidecavestro/123table:fast-latest \
   -stable foo \
   -create \
   -url jdbc:sqlite:/data/foo.db
@@ -102,6 +102,6 @@ docker run --rm -it -v ./target:/target 123table-tests
 - [x] Feat: support for additional/custom JDBC drivers
 - [x] Feat: copy from db
 - [ ] CI: code coverage > 90%
-- [ ] CI: automatic tests on push
+- [x] CI: automatic tests on push
 - [ ] CI: show test coverage
-- [ ] CI: release automation
+- [c] CI: release automation
