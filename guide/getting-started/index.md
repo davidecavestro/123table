@@ -26,7 +26,7 @@ _surname_ fields
 
 ```bash
 docker run --rm -it \
-  -v $(pwd):/data ghcr.io/davidecavestro/123table:main-fast \
+  -v $(pwd):/data ghcr.io/davidecavestro/123table:fast-latest \
   -stable foo \
   -url jdbc:sqlite:/data/foo.db
   --mapper '[{ "name": "firstname", "expr": "orig.capitalize()" }, \
