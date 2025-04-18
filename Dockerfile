@@ -75,7 +75,7 @@ COPY --from=build --chown=1000:0 /app/lib /app/lib
 WORKDIR /app
 USER 1000:0
 
-COPY --chown=1000:0 --chmod=750 123t /app/123t
+COPY --chown=1000:0 --chmod=770 123t /app/123t
 ENV DRIVERS_DIR=/drivers
 ENV PATH=$PATH:/opt/groovy/bin
 

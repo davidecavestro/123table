@@ -25,6 +25,8 @@ if [ "${CRAC_MODE}" = save ]; then
     -XX:CRaCCheckpointTo="${CRAC_PATH}" \
     -cp "${CRAC_CLASSPATH}" \
     main -w
+  chgrp -R 0 "${CRAC_PATH}"
+  chmod -R g+r "${CRAC_PATH}"
 elif [ "${CRAC_MODE}" = restore ]; then
   echo "$@" | \
   java \
