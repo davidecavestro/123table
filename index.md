@@ -1,4 +1,4 @@
-# Project Documentation
+# 123table Project Documentation
 
 _123table_ reads the rows from a db table or from a CSV (using a JDBC driver)
 and insert them into a table in any JDBC compatible database.
