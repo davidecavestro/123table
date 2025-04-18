@@ -1,4 +1,4 @@
-[Home](/123table) - [Up](./)
+[Home](/123table)
 
 # Configuring the field mapper
 
