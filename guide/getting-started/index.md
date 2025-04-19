@@ -1,9 +1,7 @@
-[Home](/123table)
-
 # Getting started with 123table
 
 _123table_ is distributed as a container image, so the easiest
-way to use it is though [docker](https://docs.docker.com/get-started/)
+way to use it is through [docker](https://docs.docker.com/get-started/)
 or [podman](https://podman.io/get-started).
 
 

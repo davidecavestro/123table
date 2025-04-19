@@ -1,5 +1,3 @@
-[Home](/123table)
-
 # Configuring the field mapper
 
 Though *123table* is not an ETL tool, it supports remapping
