@@ -16,6 +16,7 @@ Beta testing: the implemented features seem to work as expected.
 <br>
 See the roadmap below or open a PR for missing features.
 
+
 ## Image flavours
 
 _123table_ is packaged into flavours for specific needs
@@ -31,6 +32,9 @@ _123table_ is packaged into flavours for specific needs
 Where the *fast* flavours leverage features from the https://crac.org project
 in order to speed-up the container boot.
 
+See [Image Flavours](https://davidecavestro.github.io/123table/guide/flavours.html) for more details.
+
+
 The included drivers are available within the `/drivers` folder.
 <br>
 Currently packaged drivers cover the following data sources:
@@ -44,6 +48,8 @@ Currently packaged drivers cover the following data sources:
 
 If other drivers become needed, just mount a volume or bind-mount
 a local folder containing the appropriate jars.
+
+See [JDBC Drivers](https://davidecavestro.github.io/123table/guide/drivers.html) for more details.
 
 
 ## Motivation
@@ -74,7 +80,9 @@ to load its rows into a newly created *foo* table of a sqlite db.
 <br>
 Replace the `-url` value with a proper JDBC url for your target db. 
 <br>
-Use the `--help` flag to get the full list of options.
+Use the `--help` flag to get the full list of options or see the 
+[Getting Started](https://davidecavestro.github.io/123table/guide/getting-started/)
+docs for further details.
 
 ### How to build locally
 

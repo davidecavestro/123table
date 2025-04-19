@@ -55,6 +55,10 @@ def cli = new CliBuilder(
         longOpt: 'mapper-file', 'Json file for field.mapping: see the "mapper" flag',
         args: 1
     )
+    w(
+        longOpt: 'warm-up', 'Generate a CRaC checkpoint that at restore reads args from STDIN',
+        args: 1
+    )
 }
 
 def processArgs = {def args ->
