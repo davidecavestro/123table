@@ -40,8 +40,9 @@ That's why the two flavours of _fast_ images differ on the following items:
 - `SIDELOAD_DRIVERS` env var: it's `true` for the _slim_ one,
 to enable the discovery and load of JDBC drivers, while it is `false`
 for the image with packaged drivers
-- the classpath include the jar files available within the `/drivers`
-folder at image build time for the image with packaged drivers
+- the classpath includes the jar files available within the `/drivers`
+folder at image build time for the image with packaged drivers, while
+the _slim_ image doesn't have any prepackaged driver
 
 You can find more details about CRaC packaging at
 [Image Flavours](/123table/guide/flavours.html).
