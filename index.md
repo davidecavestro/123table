@@ -1,14 +1,22 @@
 # 123table docs
 
 _123table_ reads the rows from a db table or from a CSV (using a JDBC driver)
-and insert them into a table in any JDBC compatible database.
+and inserts them into a table in any JDBC compatible database.
 
 ## User Guide
 
-[Getting Started](guide/getting-started/) provides a quick start guide.
+[Getting Started](guide/getting-started/) provides a quick start guide
+for supported use cases.
 
-[Mapping fields](guide/getting-started/mapper.html) documents how you can
-remap remap field names and how field values can be dynamically computed. 
+[Mapping Fields](guide/mapper.html) documents how you can
+remap field names and how field values can be dynamically computed. 
+
+[JDBC Drivers](guide/drivers.html) documents how you can
+customise the JDBC drivers to access your databases. 
+
+[Image Flavours](guide/flavours.html) gives you some insights
+about the image flavours and how you can customise them. 
+
 
 ## Development
 

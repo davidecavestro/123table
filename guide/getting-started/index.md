@@ -2,6 +2,28 @@
 
 # Getting started with 123table
 
+_123table_ is distributed as a container image, so the easiest
+way to use it is though [docker](https://docs.docker.com/get-started/)
+or [podman](https://podman.io/get-started).
+
+
+## Concepts
+
+_123table_ offers a command line interface, so that it can be launched
+from a terminal or a script.
+
+The simplest run of _123table_ does one simple thing:
+inserts into the target db table every row it reads from the source table.
+
+_123table_ can use any data source as the db, provided that you have the
+appropriate JDBC driver.
+
+A special data source is CSV, because the CSV JDBC driver can read any
+CSV file as a db table.
+
+See [Drivers](/123table/guide/drivers.html) for more details about JDBC drivers. 
+
+
 ## Copy CSV contents to a new table
 
 Given a CSV file named _foo.csv_ in the current directory, run
@@ -34,4 +56,4 @@ docker run --rm -it \
 ```
 
 Consider using a file for complex mappings.
-See [Mapping fields](/123table/guide/getting-started/mapper.html) for more details.
+See [Mapping fields](/123table/guide/mapper.html) for more details.
