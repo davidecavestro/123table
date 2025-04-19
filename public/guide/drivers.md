@@ -1,5 +1,3 @@
-[Home](/123table)
-
 # 123table and JDBC drivers
 
 Since _123table_ is written in the Groovy language and the access to the

@@ -1,5 +1,3 @@
-[Home](/123table)
-
 # Image flavours
 
 _123table_ is packaged into flavours for specific needs
