@@ -3,6 +3,7 @@
 _123table_ reads the rows from a db table or from a CSV (using a JDBC driver)
 and inserts them into a table in any JDBC compatible database.
 
+
 ## User Guide
 
 [Getting Started](guide/getting-started/) provides a quick start guide
@@ -19,8 +20,17 @@ customise the JDBC drivers to access your databases.
 [Image Flavours](guide/flavours.html) gives you some insights
 about the image flavours and how you can customise them. 
 
+
 ## Development
 
-[View Test Reports](tests.html) from build automation on main branch.
+You can encoutaged to propose a PR for any issue or feature request.
+THe git repository hosts under path _.devcontainer_ the configuration
+to open the project into a
+[Visual Studio Code Dev Container](https://code.visualstudio.com/docs/devcontainers/containers).
 
-[View Coverage Reports](coverage/) from build automation on main branch.
+
+### CI Reports
+
+View the [Test Reports](tests.html) from build automation on main branch.
+
+View the [Coverage Reports](coverage/) from build automation on main branch.
