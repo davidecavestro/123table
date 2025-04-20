@@ -57,17 +57,17 @@ Consider using a file for complex mappings.
 See [Mapping fields](/123table/guide/mapper.html) for more details.
 
 
-## Truncate a table and add rows from another db
+## Truncate a table then add rows from another db
 
-The following command truncates the _foo_ table on _target_ db, 
-then loads the rows of the _bar_ table from _source_ db
+The following command truncates the _bar_ table on _target_ db,
+then loads the rows of the _foo_ table from _source_ db
 
 ```bash
 docker run --rm -it \
   -v $(pwd):/data ghcr.io/davidecavestro/123table:fast-latest \
   -surl jdbc:sqlite:/data/source.db \
-  -stable bar \
+  -stable foo \
   -url jdbc:sqlite:/data/target.db \
-  -table foo \
+  -table bar \
   -trunc
 ```
