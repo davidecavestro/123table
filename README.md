@@ -12,7 +12,7 @@ and inserts them into a table in any JDBC compatible database.
 
 ## Project status
 
-Beta testing: the implemented features seem to work as expected.
+Available for beta testing: the implemented features seem to work as expected.
 <br>
 See the roadmap below or open a PR for missing features.
 

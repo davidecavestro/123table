@@ -22,7 +22,13 @@ CSV file as a db table.
 See [Drivers](/123table/guide/drivers.html) for more details about JDBC drivers. 
 
 
-## Copy CSV contents to a new table
+## Examples
+
+The next sections show some examples mainly based on sqlite and CSV
+since this way you can test them without the need of a DBMS server.
+
+
+### Copy CSV contents to a new table
 
 Given a CSV file named _foo.csv_ in the current directory, run
 
@@ -39,7 +45,8 @@ Replace the `-url` value with the proper JDBC url for your target db.
 <br>
 Use the `--help` flag to get the full list of options.
 
-## Copy CSV rows to a table transforming values
+
+### Copy CSV rows to a table transforming values
 
 The following command loads a CSV capitalizing both the _firstname_ and
 _surname_ fields
@@ -57,17 +64,17 @@ Consider using a file for complex mappings.
 See [Mapping fields](/123table/guide/mapper.html) for more details.
 
 
-## Truncate a table and add rows from another db
+### Truncate a table then add rows from another db
 
-The following command truncates the _foo_ table on _target_ db, 
-then loads the rows of the _bar_ table from _source_ db
+The following command truncates the _bar_ table on _target_ db,
+then loads the rows of the _foo_ table from _source_ db
 
 ```bash
 docker run --rm -it \
   -v $(pwd):/data ghcr.io/davidecavestro/123table:fast-latest \
   -surl jdbc:sqlite:/data/source.db \
-  -stable bar \
+  -stable foo \
   -url jdbc:sqlite:/data/target.db \
-  -table foo \
+  -table bar \
   -trunc
 ```
