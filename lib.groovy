@@ -50,6 +50,8 @@ def execute(def opts) {
                 targetDbUser,
                 targetDbPassword,
             ) { def targetDb ->
+                def dbType = targetDb.connection.metaData.databaseProductName
+                println "Target dbType: ${dbType}"
                 if (createTable) {
                     if (!targetFields) {
                         throw new RuntimeException('Cannot create a table without any knowledge of the fields.')
@@ -61,10 +63,18 @@ def execute(def opts) {
                     """ as String
                     println 'Table created'
                 } else if (truncateTable){
+                    def truncSql
+                    switch (dbType) {
+                        case 'SQLite': {
+                            truncSql = "DELETE FROM ${targetTable}"
+                            println "Adapting truncate for db ${dbType}"
+                            break
+                        }
+                        default:
+                            truncSql = "TRUNCATE TABLE ${targetTable}"
+                    }
                     println 'Truncating table...'
-                    targetDb.execute """
-                        TRUNCATE TABLE ${targetTable}
-                    """ as String
+                    targetDb.execute truncSql as String
                     println 'Table truncated'
                 }
                 def counter = 0
