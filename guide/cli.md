@@ -10,7 +10,7 @@ The following table sums up the options exposed by _123table_ CLI.
 |  `-surl`/`--source-db-url`   | `jdbc:relique:csv:/data`              | Source JDBC url                     |
 |  `-stable`/`--source-table`  | `table`                               | Source table name                   |
 |  `-url`/`--target-db-url`    | -                                     | **Mandatory** - Target JDBC url     |
-|  `-table`/`--target-table`   | The value of _source-table_ value     | Target table name                   |
+|  `-table`/`--target-table`   | The value of _source-table_ flag      | Target table name                   |
 |  `-query`/`--source-query`   | `SELECT * FROM <<source-table>>`      | Source query                        |
 |  `-batch`/`--batch-size`     | `100`                                 | Batch size                          |
 |  `-create`/`--create-table`  | -                                     | Create the target table             |
