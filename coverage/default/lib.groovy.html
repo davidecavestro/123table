@@ -50,6 +50,8 @@ def execute(def opts) {
                 targetDbUser,
                 targetDbPassword,
             ) { def targetDb -&gt;
+                def dbType = targetDb.connection.metaData.databaseProductName
+                println &quot;Target dbType: ${dbType}&quot;
                 if (createTable) {
                     if (!targetFields) {
                         throw new RuntimeException('Cannot create a table without any knowledge of the fields.')
@@ -61,10 +63,18 @@ def execute(def opts) {
                     &quot;&quot;&quot; as String
                     println 'Table created'
                 } else if (truncateTable){
+                    def truncSql
+                    switch (dbType) {
+                        case 'SQLite': {
+                            truncSql = &quot;DELETE FROM ${targetTable}&quot;
+                            println &quot;Adapting truncate for db ${dbType}&quot;
+                            break
+                        }
+                        default:
+                            truncSql = &quot;TRUNCATE TABLE ${targetTable}&quot;
+                    }
                     println 'Truncating table...'
-                    targetDb.execute &quot;&quot;&quot;
-                        TRUNCATE TABLE ${targetTable}
-                    &quot;&quot;&quot; as String
+                    targetDb.execute truncSql as String
                     println 'Table truncated'
                 }
                 def counter = 0
@@ -81,14 +91,14 @@ def execute(def opts) {
 }
 
 def toBatchParams(def targetFields, def row) {
-<span class="fc" id="L84">    targetFields*.toValue(row)</span>
+<span class="fc" id="L94">    targetFields*.toValue(row)</span>
 }
 
 def mapTargetFields(def mapper) {
-<span class="fc" id="L88">    def shell = new GroovyShell()</span>
-<span class="fc" id="L89">    def closures = [:]</span>
+<span class="fc" id="L98">    def shell = new GroovyShell()</span>
+<span class="fc" id="L99">    def closures = [:]</span>
 
-<span class="fc" id="L91">    mapper.collect { def mapping -&gt;</span>
+<span class="fc" id="L101">    mapper.collect { def mapping -&gt;</span>
         def srcField = mapping.from ?: mapping.name
         def toValue = { def row -&gt;
             def orig = row[srcField]
