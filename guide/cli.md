@@ -22,4 +22,9 @@ The following table sums up the options exposed by _123table_ CLI.
 |  `-h`/`--help`               | -                                     | Show usage information              |
 |  `-mapper`/`--mapper`        | -                                     | See [Mapping fields](mapper.html)   |
 |  `-mfile`/`--mapper-file`    | -                                     | See the _mapper_ flag               |
-|  `-w`/`--warm-up`            | -                                     | Generate a CRaC checkpoint. See [_fast_ images](flavours.html) |
+|  `-w`/`--warm-up`            | -                                     | Generate a CRaC checkpoint.         |
+
+
+Please note that the `-w`/`--warm-up` flags are meant for generating a
+CRaC checkpoint to reduce _123table_ startup time.
+For more details Check [_fast_ images](flavours.html).
