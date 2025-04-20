@@ -11,11 +11,14 @@ mappings, where each field mapping possibly specifies
 - the field type
 - how the target value is computed from the original one.
 
+You can easily pass a mapper to *123table* simply setting
+the env variable <code>MAPPER_FILE</code> to the path of
+a json file containing the mappings list.
 
 ## Mapper format
 
-The mapper is specified as a JSON list of objects. Each object
-supports the following properties:
+The mapper is specified as a JSON list of objects.
+Each object supports the following properties:
 
 <dl>
 <dt>from</dt>
@@ -59,6 +62,7 @@ orig.toLowerCase()
 </pre>
 </dd>
 </dl>
+
 
 ## How to specify a mapper
 
