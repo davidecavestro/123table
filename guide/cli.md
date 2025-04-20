@@ -5,7 +5,7 @@
 
 The following table sums up the options exposed by _123table_ CLI.
 
-|  Short / Long                | Default value                         | Description                         |
+|  *Short / Long*              | *Default value*                       | *Description*                       |
 |  :-------------------------- |:------------------------------------- | :---------------------------------- |
 |  `-surl`/`--source-db-url`   | `jdbc:relique:csv:/data`              | Source JDBC url                     |
 |  `-stable`/`--source-table`  | `table`                               | Source table name                   |
