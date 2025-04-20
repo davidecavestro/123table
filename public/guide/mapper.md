@@ -21,23 +21,23 @@ The mapper is specified as a JSON list of objects.
 Each object supports the following properties:
 
 <dl>
-<dt>from</dt>
+<dt><code>from</code></dt>
 <dd>
     Name of the source field
     (Mandatory unless using <code>name</code>)
 </dd>
-<dt>to</dt>
+<dt><code>to</code></dt>
 <dd>
     Name of the target field.
     (Mandatory unless using <code>name</code>)
 </dd>
-<dt>name</dt>
+<dt><code>name</code></dt>
 <dd>
     Common name for both source and target field.
     An alternative to <code>from</code>/<code>to</code> when
     the name is the same but the value should be computed.
 </dd>
-<dt>expr</dt>
+<dt><code>expr</code></dt>
 <dd>
     A simple groovy expression (aka formula) deriving a value
     from the original one (available as variable <code>orig</code>).
@@ -47,7 +47,7 @@ Each object supports the following properties:
 orig.toLowerCase()
 </pre>
 </dd>
-<dt>calc</dt>
+<dt><code>calc</code></dt>
 <dd>
     A calculator (a groovy closure) deriving a value
     from the original one

@@ -37,7 +37,7 @@ def cli = new CliBuilder(
         args: 1
     )
     create(longOpt: 'create-table', 'Create the target table')
-    truncate(longOpt: 'truncate-table', 'Truncate the target table')
+    trunc(longOpt: 'truncate-table', 'Truncate the target table')
     dry(longOpt: 'dry-run', 'Just mimic write actions, avoid making any changes to the target db')
     h(longOpt: 'help', 'Usage Information')
 

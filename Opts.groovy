@@ -36,7 +36,7 @@ class Opts {
         batchSize = cliOptions.'batch-size' ?: batchSize
 
         createTable = cliOptions.create
-        truncateTable = cliOptions.truncate
+        truncateTable = cliOptions.trunc
         dryRun = cliOptions.dryRun
         verbose = cliOptions.verbose
 
