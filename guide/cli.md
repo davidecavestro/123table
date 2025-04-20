@@ -17,6 +17,6 @@ The following table sums up the options exposed by _123table_ CLI.
 | `-truncate`   | `--truncate-table` | -                                     | Truncate the target table           |
 | `-dry`        | `--dry-run`        | -                                     | Avoid making any changes            |
 | `-h`          | `--help`           | -                                     | Show usage information              |
-| `-mapper`     | `--mapper`         | -                                     | [Mapping Fields](guide/mapper.html) |
+| `-mapper`     | `--mapper`         | -                                     | [Mapping Fields](mapper.html) |
 | `-mfile`      | `--mapper-file`    | -                                     | See the _mapper_ flag               |
-| `-w`          | `--warm-up`        | -                                     | Generate a CRaC checkpoint. See [_fast_ images](guide/flavours.html) |
+| `-w`          | `--warm-up`        | -                                     | Generate a CRaC checkpoint. See [_fast_ images](flavours.html) |

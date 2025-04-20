@@ -24,7 +24,7 @@ Currently packaged drivers cover the following data sources:
 If other drivers become needed, just mount a volume or bind-mount
 a local folder containing the appropriate jars.
 
-See [Image Flavours](/123table/guide/flavours.html) for insights about image flavours
+See [Image Flavours](flavours.html) for insights about image flavours
 w/o packaged drivers.
 
 
@@ -43,4 +43,4 @@ folder at image build time for the image with packaged drivers, while
 the _slim_ image doesn't have any prepackaged driver
 
 You can find more details about CRaC packaging at
-[Image Flavours](/123table/guide/flavours.html).
+[Image Flavours](flavours.html).

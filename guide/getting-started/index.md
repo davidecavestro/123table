@@ -28,7 +28,7 @@ Given a CSV file named _foo.csv_ in the current directory, run
 
 ```bash
 docker run --rm -it \
-  -v $(pwd):/data ghcr.io/davidecavestro/123table:main-fast \
+  -v $(pwd):/data ghcr.io/davidecavestro/123table:fast-latest \
   -stable foo \
   -create \
   -url jdbc:sqlite:/data/foo.db
