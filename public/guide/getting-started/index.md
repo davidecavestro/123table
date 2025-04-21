@@ -4,6 +4,8 @@ _123table_ is distributed as a container image, so the easiest
 way to use it is through [docker](https://docs.docker.com/get-started/)
 or [podman](https://podman.io/get-started).
 
+![Duckdb example](/public/assets/123table_duckdb.png)
+
 
 ## Concepts
 

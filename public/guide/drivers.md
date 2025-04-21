@@ -14,6 +14,7 @@ The included drivers are available within the `/drivers` folder.
 <br>
 Currently packaged drivers cover the following data sources:
 - csv
+- duckdb
 - h2
 - MS SQLserver
 - MySQL

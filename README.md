@@ -10,6 +10,8 @@ _123table_ is a containerized command line tool that makes it easy to load rows 
 _123table_ reads the rows from a db table or from a CSV (using a JDBC driver)
 and inserts them into a table in any JDBC compatible database.
 
+![Duckdb example](/public/assets/123table_duckdb.png)
+
 ## Project status
 
 Available for beta testing: the implemented features seem to work as expected.
@@ -39,6 +41,7 @@ The included drivers are available within the `/drivers` folder.
 <br>
 Currently packaged drivers cover the following data sources:
 - csv
+- duckdb
 - h2
 - MS SQLserver
 - MySQL
@@ -82,7 +85,7 @@ Replace the `-url` value with a proper JDBC url for your target db.
 <br>
 Use the `--help` flag to get the full list of options or see the 
 [Getting Started](https://davidecavestro.github.io/123table/guide/getting-started/)
-docs for further details.
+guide for further details.
 
 ### How to build locally
 
