@@ -4,7 +4,7 @@ _123table_ reads the rows from a db table or from a CSV (using a JDBC driver)
 and inserts them into a table in any JDBC compatible database.
 
 
-## User Guide
+## User Guides
 
 [Getting started](guide/getting-started/) provides a quick start guide
 for supported use cases.
