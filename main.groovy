@@ -7,7 +7,7 @@ def defaultSourceTable = 'table'
 def defaultSourceQuery = 'SELECT * FROM <<source-table>>'
 def defaultBatchSize = 100
 
-println "PID = ${ProcessHandle.current().pid()}"
+// println "PID = ${ProcessHandle.current().pid()}"
 
 def cli = new CliBuilder(
     header: '123Table is a command line tool that makes it easy to load rows into a database table.',
@@ -64,18 +64,16 @@ def cli = new CliBuilder(
 def processArgs = {def args ->
     if (['-h', '--help'].intersect(args as List)) {
         cli.usage()
-        /* groovylint-disable-next-line SystemExit */
-        System.exit(0)
+    } else {
+        def cliOptions = cli.parse(args)
+
+        if (cliOptions) {
+            new lib().execute(new Opts().fromCli(cliOptions))
+        } else {
+            /* groovylint-disable-next-line SystemExit */
+            System.exit(-1)
+        }
     }
-
-    def cliOptions = cli.parse(args)
-
-    if (!cliOptions) {
-        /* groovylint-disable-next-line SystemExit */
-        System.exit(-1)
-    }
-
-    new lib().execute(new Opts().fromCli(cliOptions))
 }
 
 if (['-w', '--warm-up'].intersect(args as List)) {

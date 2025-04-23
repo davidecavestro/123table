@@ -7,7 +7,7 @@ import java.time.*
 import java.time.format.*
 import spock.lang.Specification
 
-class LibSpec extends Specification {
+class OmniSpec extends Specification {
     def "should get correct driver class name for postgres"() {
         given: "a Lib instance"
         def lib = new lib()
@@ -147,5 +147,14 @@ class LibSpec extends Specification {
         targetFields[0].toValue(row) == 'abc'
     }
 
+    def "the cli should show helm"() {
+        given: "a main instance"
+        def main = new main()
+
+        when: "invoked passing -h"
+        main.run(new File('main.groovy'), '-h')
+
+        then: "it doesn't fail"
+    }
 
 }

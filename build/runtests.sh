@@ -31,8 +31,8 @@ JUNIT_CFG="\
 -Djunit.platform.reporting.output.dir=${TARGETDIR}" \
 JAVA_OPTS="${AGENT_CFG} ${JUNIT_CFG}" \
 groovy \
-  -cp $(printf '%s:' ${DRIVERS_DIR}/*.jar)$(printf '%s:' ${BUILDDIR}/spock-*.jar) \
-  ${SOURCESDIR}/libspec.groovy
+  -cp $(printf '%s:' ${DRIVERS_DIR}/*.jar)$(printf '%s:' ${BUILDDIR}/spock-*.jar)$(printf '%s:' ${SOURCESDIR}/lib/*.jar) \
+  ${SOURCESDIR}/spec.groovy
 
 ls -lhan ${BUILDDIR}
 ls -lhan ${TARGETDIR}

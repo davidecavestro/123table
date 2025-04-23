@@ -50,7 +50,7 @@ RUN sh ${DRIVERS_DIR}/download.sh org.jacoco:org.jacoco.agent:0.8.12 /build runt
 RUN sh ${DRIVERS_DIR}/download.sh org.jacoco:org.jacoco.cli:0.8.12 /build nodeps
 RUN sh ${DRIVERS_DIR}/download.sh org.opentest4j.reporting:open-test-reporting-cli:0.2.2 /build standalone
 
-COPY libspec.groovy /app
+COPY spec.groovy /app
 COPY build/runtests.sh /build
 
 USER 0:0
