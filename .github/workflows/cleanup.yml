@@ -27,7 +27,7 @@ jobs:
           git checkout --orphan temp
           git reset --hard
           git commit --allow-empty -m "Initial badges branch"
-          git branch -D main
-          git branch -m temp main
-          git push --force origin main
+          git branch -D badges
+          git branch -m temp badges
+          git push --force origin badges
           popd
