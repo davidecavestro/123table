@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>main.groovy</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">default</a> &gt; <span class="el_source">main.groovy</span></div><h1>main.groovy</h1><pre class="source lang-java linenums">#!/usr/bin/env groovy
+
+import groovy.cli.commons.CliBuilder
+
+<span class="fc" id="L5">def defaultSourceUrl = 'jdbc:relique:csv:/data'</span>
+<span class="fc" id="L6">def defaultSourceTable = 'table'</span>
+<span class="fc" id="L7">def defaultSourceQuery = 'SELECT * FROM &lt;&lt;source-table&gt;&gt;'</span>
+<span class="fc" id="L8">def defaultBatchSize = 100</span>
+
+// println &quot;PID = ${ProcessHandle.current().pid()}&quot;
+
+<span class="fc" id="L12">def cli = new CliBuilder(</span>
+    header: '123Table is a command line tool that makes it easy to load rows into a database table.',
+    usage:'123t [options] -url jdbc:sqlite:/data/foo.db -stable foo -create',
+    width: -1
+).tap {
+    surl(
+        longOpt: 'source-db-url', &quot;Source JDBC url. [defaults to '${defaultSourceUrl}']&quot;,
+        args: 1,
+        defaultValue: defaultSourceUrl
+    )
+    url(
+        longOpt: 'target-db-url', 'Target JDBC url', args: 1, required: true
+    )
+    stable(
+        longOpt: 'source-table', &quot;Source table name. [defaults to '${defaultSourceTable}']&quot;,
+        args: 1,
+        defaultValue: defaultSourceTable
+    )
+    table(longOpt: 'target-table', 'Target table name. [defaults to &lt;&lt;source-table&gt;&gt;]', args: 1)
+    query(
+        longOpt: 'source-query', &quot;Source query. [defaults to '${defaultSourceQuery}']&quot;,
+        args: 1
+    )
+    batch(
+        longOpt: 'batch-size', &quot;Batch size. [defaults to '${defaultBatchSize}']&quot;,
+        args: 1
+    )
+    create(longOpt: 'create-table', 'Create the target table')
+    trunc(longOpt: 'truncate-table', 'Truncate the target table')
+    dry(longOpt: 'dry-run', 'Just mimic write actions, avoid making any changes to the target db')
+    h(longOpt: 'help', 'Usage Information')
+
+    mapper(
+        longOpt: 'mapper', 'Field.mapper: json list of objects structured as: ' +
+        'from: &lt;source field&gt; '+
+        'to: &lt;target field&gt; ' +
+        'name: &lt;alternative to from/to&gt; ' +
+        'type: used for table auto create ' +
+        'expr: simple expression returning the value (a groovy expression with access to &quot;orig&quot; value)' +
+        'calc: calculator returning the value. A groovy closure i.e. { def orig, def row -&gt; orig?.toLowerCase() }',
+        args: 1
+    )
+    mfile(
+        longOpt: 'mapper-file', 'Json file for field.mapping: see the &quot;mapper&quot; flag',
+        args: 1
+    )
+    w(
+        longOpt: 'warm-up', 'Generate a CRaC checkpoint that at restore reads args from STDIN',
+        args: 1
+    )
+}
+
+<span class="fc" id="L64">def processArgs = {def args -&gt;</span>
+    if (['-h', '--help'].intersect(args as List)) {
+        cli.usage()
+    } else {
+        def cliOptions = cli.parse(args)
+
+        if (cliOptions) {
+            new lib().execute(new Opts().fromCli(cliOptions))
+        } else {
+            /* groovylint-disable-next-line SystemExit */
+            System.exit(-1)
+        }
+    }
+}
+
+<span class="pc bpc" id="L79" title="1 of 2 branches missed.">if (['-w', '--warm-up'].intersect(args as List)) {</span>
+<span class="nc" id="L80">    org.crac.Core.globalContext.register([</span>
+        beforeCheckpoint: { },
+        afterRestore: { def ctx -&gt;
+            if (System.getenv('SIDELOAD_DRIVERS') == 'true') {
+                def drivers = new File(System.getenv('DRIVERS_DIR') ?: '/drivers').listFiles(
+                    [accept: { it.name.endsWith('.jar') }] as FileFilter
+                ).collect { def jar -&gt;
+                    def jarFile = new java.util.jar.JarFile(jar)
+                    def svcFile = jarFile.getEntry('META-INF/services/java.sql.Driver')
+                    // pick the first non empty line
+                    def driverClassName = jarFile.getInputStream(svcFile).readLines().find { it.trim() }?.trim()
+
+                    [driver: driverClassName, url: jar.toURI().toURL()]
+                }
+
+                def driversClassLoader = new URLClassLoader(
+                    drivers*.url as URL[],
+                    this.class.classLoader
+                )
+                Thread.currentThread().setContextClassLoader(driversClassLoader)
+
+                drivers.findAll { it.driver }*.driver.each {
+                    def driverClass = driversClassLoader.loadClass(it)
+                    println &quot;Registering driver: ${ it }&quot;
+                    def driverShim = new Wrapper(wrapped: driverClass.newInstance())
+
+                    java.sql.DriverManager.registerDriver(driverShim)
+                }
+            }
+            def input = System.in.newReader().readLines().first
+            /* groovylint-disable-next-line UnnecessaryCollectCall */
+            def stdinArgs = (input =~ /&quot;[^&quot;]*&quot;|'[^']*'|[^\s]+/).collect { 
+                it.replaceAll(/^[&quot;']|[&quot;']$/,'')
+            }.toArray()
+// println &quot;afterRestore called for ${stdinArgs.size()} args&quot;
+            processArgs stdinArgs
+        },
+    ] as org.crac.Resource)
+
+<span class="nc" id="L119">    org.crac.Core.checkpointRestore()</span>
+} else {
+<span class="fc" id="L121">    processArgs args</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
