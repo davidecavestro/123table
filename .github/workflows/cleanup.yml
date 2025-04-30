@@ -22,12 +22,6 @@ jobs:
           pushd badges
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "GitHub Actions"
-          git rm -rf .
-          git clean -fdx
-          git checkout --orphan temp
-          git reset --hard
-          git commit --allow-empty -m "Initial badges branch"
-          git branch -D badges
-          git branch -m temp badges
+          git reset --soft $(git rev-list --max-parents=0 HEAD) && git commit --amend --date=now --no-edit
           git push --force origin badges
           popd
