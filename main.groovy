@@ -80,38 +80,11 @@ if (['-w', '--warm-up'].intersect(args as List)) {
     org.crac.Core.globalContext.register([
         beforeCheckpoint: { },
         afterRestore: { def ctx ->
+            def loader = new Loader()
             if (System.getenv('SIDELOAD_DRIVERS') == 'true') {
-                def drivers = new File(System.getenv('DRIVERS_DIR') ?: '/drivers').listFiles(
-                    [accept: { it.name.endsWith('.jar') }] as FileFilter
-                ).collect { def jar ->
-                    def jarFile = new java.util.jar.JarFile(jar)
-                    def svcFile = jarFile.getEntry('META-INF/services/java.sql.Driver')
-                    // pick the first non empty line
-                    def driverClassName = jarFile.getInputStream(svcFile).readLines().find { it.trim() }?.trim()
-
-                    [driver: driverClassName, url: jar.toURI().toURL()]
-                }
-
-                def driversClassLoader = new URLClassLoader(
-                    drivers*.url as URL[],
-                    this.class.classLoader
-                )
-                Thread.currentThread().setContextClassLoader(driversClassLoader)
-
-                drivers.findAll { it.driver }*.driver.each {
-                    def driverClass = driversClassLoader.loadClass(it)
-                    println "Registering driver: ${ it }"
-                    def driverShim = new Wrapper(wrapped: driverClass.newInstance())
-
-                    java.sql.DriverManager.registerDriver(driverShim)
-                }
+                loader.sideLoadDrivers(System.getenv('DRIVERS_DIR') ?: '/drivers')
             }
-            def input = System.in.newReader().readLines().first
-            /* groovylint-disable-next-line UnnecessaryCollectCall */
-            def stdinArgs = (input =~ /"[^"]*"|'[^']*'|[^\s]+/).collect { 
-                it.replaceAll(/^["']|["']$/,'')
-            }.toArray()
-// println "afterRestore called for ${stdinArgs.size()} args"
+            def stdinArgs = loader.getArgs(System.in)
             processArgs stdinArgs
         },
     ] as org.crac.Resource)

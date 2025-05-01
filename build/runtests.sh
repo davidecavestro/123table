@@ -22,7 +22,7 @@ ls -lhan
 cd ${SOURCESDIR}
 
 JACOCO_PATH=$(printf '%s' ${BUILDDIR}/org.jacoco.agent-*-runtime.jar) \
-AGENT_CFG="-javaagent:${JACOCO_PATH}=destfile=${BUILDDIR}/jacoco.exec,classdumpdir=${CLASSESDIR},includes=main:lib" \
+AGENT_CFG="-javaagent:${JACOCO_PATH}=destfile=${BUILDDIR}/jacoco.exec,classdumpdir=${CLASSESDIR},includes=main:lib:Opts:Wrapper:Loader" \
 JUNIT_CFG="\
 -Djunit.platform.reporting.output.files=TEST-report.xml,TEST-report.json,TEST-report.html \
 -Djunit.platform.reporting.open.xml.enabled=true \

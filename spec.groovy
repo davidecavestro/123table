@@ -1,5 +1,5 @@
 
-@Grab('org.spockframework:spock-core')
+@Grab('org.spockframework:spock-core:2.3-groovy-4.0')
 @Grab('org.junit.platform:junit-platform-reporting:1.11.4')
 
 import groovy.sql.*
@@ -147,7 +147,7 @@ class OmniSpec extends Specification {
         targetFields[0].toValue(row) == 'abc'
     }
 
-    def "the cli should show helm"() {
+    def "the cli should show help"() {
         given: "a main instance"
         def main = new main()
 
@@ -157,4 +157,109 @@ class OmniSpec extends Specification {
         then: "it doesn't fail"
     }
 
+    def "cli opts should be parsed into Opts"() {
+        given: "cli opts"
+        def cliOptions = [
+            'source-db-url': 'jdbc:my//bar',
+            'source-db-user': 'foo',
+            'source-db-password': 'bar',
+            'source-table': 'foo',
+            'source-query': 'SELECT foo',
+            'target-db-url': 'jdbc:your//baz',
+            'target-db-user': 'bat',
+            'target-db-password': 'man',
+            'target-table': 'tbl',
+            'batch-size': '1',
+        ]
+        def opts = new Opts()
+        def extracted
+
+        when: "cli opts are extracted"
+        extracted = opts.fromCli(cliOptions)
+
+        then: "extracted opts match cli ones"
+        extracted.sourceDbUrl == cliOptions.'source-db-url'
+    }
+
+    def "cli opts should be parsed into Opts with defaults"() {
+        given: "cli opts"
+        def cliOptions = [
+            'source-db-url': 'jdbc:my//bar',
+            'source-table': 'foo',
+            'target-db-url': 'jdbc:your//baz'
+        ]
+        def opts = new Opts()
+        def extracted
+
+        when: "cli opts are extracted"
+        extracted = opts.fromCli(cliOptions)
+
+        then: "extracted opts match cli ones"
+        extracted.sourceDbUrl == cliOptions.'source-db-url'
+    }
+
+    def "cli opts should parse empty mapper"() {
+        given: "cli opts"
+        def cliOptions = [
+            'mapper': '{}'
+        ]
+        def opts = new Opts()
+        def extracted
+
+        when: "mapper is extracted from cliOps"
+        extracted = opts.parseMapper(cliOptions)
+
+        then: "extracted opts match cli ones"
+        extracted.mapper == [:]
+    }
+
+    def "drivers should be side-loadable"() {
+        given: "a driver Loader"
+        def lib = new lib()
+        def loader = new Loader()
+
+        when: "the loader side-loads the drivers"
+        loader.sideLoadDrivers('/drivers')
+        def driver = lib.getDriverClassName("jdbc:postgresql://localhost/mydb")
+
+        then: "the driver should be available"
+        driver == "org.postgresql.Driver"
+    }
+
+
+    def "drivers should be wrappable"() {
+        given: "a wrapped driver"
+        def driver = Mock(java.sql.Driver)
+        def wrapper = new Wrapper(wrapped: driver)
+
+        when: "the wrapped is called"
+        wrapper.getMinorVersion()
+        wrapper.getMajorVersion()
+        wrapper.jdbcCompliant()
+        wrapper.acceptsURL('jdbc.foo//bar')
+        wrapper.connect(null, null)
+        wrapper.getPropertyInfo(null, null)
+        wrapper.getParentLogger()
+
+        then: "the wrapper should turn calls to the wrapped driver"
+        1 * driver.getMinorVersion()
+        1 * driver.getMajorVersion()
+        1 * driver.jdbcCompliant()
+        1 * driver.acceptsURL('jdbc.foo//bar')
+        1 * driver.connect(null, null)
+        1 * driver.getPropertyInfo(null, null)
+        1 * driver.getParentLogger()
+    }
+
+    def "gets args from stdin"() {
+        given: "a Loader"
+        def loader = new Loader()
+
+        when: "args are extracted from an inputstream"
+        def args = loader.getArgs(new ByteArrayInputStream('-foo --bar'.getBytes( 'UTF-8' )))
+
+        then: "args are available"
+        args[0] == '-foo'
+        args[1] == '--bar'
+    }
 }

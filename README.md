@@ -112,7 +112,7 @@ docker run --rm -it -v ./target:/target 123table-tests
 - [X] Feat: field value remapping (value computed by custom code)
 - [x] Feat: support for additional/custom JDBC drivers
 - [x] Feat: copy from db
-- [ ] CI: code coverage > 90%
+- [x] CI: code coverage > 90%
 - [x] CI: automatic tests on push
 - [x] CI: show test coverage
 - [x] CI: release automation
