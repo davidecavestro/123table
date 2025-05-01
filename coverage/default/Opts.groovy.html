@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Opts.groovy</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">default</a> &gt; <span class="el_source">Opts.groovy</span></div><h1>Opts.groovy</h1><pre class="source lang-java linenums">class Opts {
+    def sourceDbUrl
+    def sourceDbUser
+    def sourceDbPassword
+    def sourceTable
+    def sourceQuery
+
+    def targetDbUrl
+    def targetDbUser
+    def targetDbPassword
+    def targetTable
+
+    def batchSize = 100
+
+    boolean createTable
+    boolean truncateTable
+    boolean dryRun
+    boolean verbose
+
+    def mapper = []
+
+    def fromCli(def cliOptions) {
+<span class="fc" id="L23">        sourceDbUrl = cliOptions.'source-db-url'</span>
+<span class="pc bpc" id="L24" title="1 of 2 branches missed.">        sourceDbUser = cliOptions.'source-db-user' ?: null</span>
+<span class="pc bpc" id="L25" title="1 of 2 branches missed.">        sourceDbPassword = cliOptions.'source-db-password' ?: null</span>
+
+<span class="fc" id="L27">        sourceTable = cliOptions.'source-table'</span>
+<span class="pc bpc" id="L28" title="1 of 2 branches missed.">        sourceQuery = cliOptions.'source-query' ?: &quot;SELECT * FROM ${sourceTable}&quot; as String</span>
+
+<span class="fc" id="L30">        targetDbUrl = cliOptions.'target-db-url'</span>
+<span class="pc bpc" id="L31" title="1 of 2 branches missed.">        targetDbUser = cliOptions.'target-db-user' ?: null</span>
+<span class="pc bpc" id="L32" title="1 of 2 branches missed.">        targetDbPassword = cliOptions.'target-db-password' ?: null</span>
+
+<span class="pc bpc" id="L34" title="1 of 2 branches missed.">        targetTable = cliOptions.'target-table' ?: sourceTable</span>
+
+<span class="pc bpc" id="L36" title="1 of 2 branches missed.">        batchSize = cliOptions.'batch-size' ?: batchSize</span>
+
+<span class="fc" id="L38">        createTable = cliOptions.create</span>
+<span class="fc" id="L39">        truncateTable = cliOptions.trunc</span>
+<span class="fc" id="L40">        dryRun = cliOptions.dryRun</span>
+<span class="fc" id="L41">        verbose = cliOptions.verbose</span>
+
+<span class="fc" id="L43">        mapper = parseMapper(cliOptions)</span>
+<span class="fc" id="L44">        this</span>
+    }
+
+    def parseMapper(def cliOptions) {
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">        def retVal = cliOptions.'mapper' ?: System.getenv('MAPPER')</span>
+<span class="pc bpc" id="L49" title="2 of 4 branches missed.">        if (!retVal) {</span>
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">            def mapperFile = cliOptions.'mapper-file' ?: System.getenv('MAPPER_FILE')?.with { new File(it) }</span>
+<span class="fc" id="L51">            mapperFile?.with {</span>
+                retVal = new groovy.json.JsonSlurper().parseFile(it)
+            }
+        }
+<span class="fc" id="L55">        retVal</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

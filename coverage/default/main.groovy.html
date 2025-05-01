@@ -80,44 +80,17 @@ import groovy.cli.commons.CliBuilder
 <span class="nc" id="L80">    org.crac.Core.globalContext.register([</span>
         beforeCheckpoint: { },
         afterRestore: { def ctx -&gt;
+            def loader = new Loader()
             if (System.getenv('SIDELOAD_DRIVERS') == 'true') {
-                def drivers = new File(System.getenv('DRIVERS_DIR') ?: '/drivers').listFiles(
-                    [accept: { it.name.endsWith('.jar') }] as FileFilter
-                ).collect { def jar -&gt;
-                    def jarFile = new java.util.jar.JarFile(jar)
-                    def svcFile = jarFile.getEntry('META-INF/services/java.sql.Driver')
-                    // pick the first non empty line
-                    def driverClassName = jarFile.getInputStream(svcFile).readLines().find { it.trim() }?.trim()
-
-                    [driver: driverClassName, url: jar.toURI().toURL()]
-                }
-
-                def driversClassLoader = new URLClassLoader(
-                    drivers*.url as URL[],
-                    this.class.classLoader
-                )
-                Thread.currentThread().setContextClassLoader(driversClassLoader)
-
-                drivers.findAll { it.driver }*.driver.each {
-                    def driverClass = driversClassLoader.loadClass(it)
-                    println &quot;Registering driver: ${ it }&quot;
-                    def driverShim = new Wrapper(wrapped: driverClass.newInstance())
-
-                    java.sql.DriverManager.registerDriver(driverShim)
-                }
+                loader.sideLoadDrivers(System.getenv('DRIVERS_DIR') ?: '/drivers')
             }
-            def input = System.in.newReader().readLines().first
-            /* groovylint-disable-next-line UnnecessaryCollectCall */
-            def stdinArgs = (input =~ /&quot;[^&quot;]*&quot;|'[^']*'|[^\s]+/).collect { 
-                it.replaceAll(/^[&quot;']|[&quot;']$/,'')
-            }.toArray()
-// println &quot;afterRestore called for ${stdinArgs.size()} args&quot;
+            def stdinArgs = loader.getArgs(System.in)
             processArgs stdinArgs
         },
     ] as org.crac.Resource)
 
-<span class="nc" id="L119">    org.crac.Core.checkpointRestore()</span>
+<span class="nc" id="L92">    org.crac.Core.checkpointRestore()</span>
 } else {
-<span class="fc" id="L121">    processArgs args</span>
+<span class="fc" id="L94">    processArgs args</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
