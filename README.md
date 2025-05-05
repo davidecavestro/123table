@@ -7,8 +7,8 @@
 
 _123table_ is a containerized command line tool that makes it easy to load rows into a database table.
 
-_123table_ reads the rows from a db table **or from a CSV** (using a JDBC driver)
-and inserts them into a table in any JDBC compatible database.
+_123table_ reads the rows from a CSV file or db table
+and inserts them into a table for any JDBC-compliant database.
 
 ![Duckdb example](/public/assets/123table_duckdb.png)
 
@@ -86,6 +86,7 @@ Replace the `-url` value with a proper JDBC url for your target db.
 Use the `--help` flag to get the full list of options or see the 
 [Getting Started](https://davidecavestro.github.io/123table/guide/getting-started/)
 guide for further details.
+
 
 ### How to build locally
 

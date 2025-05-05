@@ -1,7 +1,7 @@
 # 123table docs
 
-_123table_ reads the rows from a db table or from a CSV (using a JDBC driver)
-and inserts them into a table in any JDBC compatible database.
+_123table_ reads the rows from a CSV file or db table
+and inserts them into a table for any JDBC-compliant database.
 
 
 ## User Guides

@@ -66,6 +66,24 @@ Consider using a file for complex mappings.
 See [Mapping fields](/123table/guide/mapper.html) for more details.
 
 
+### Copy a subset of CSV rows to a table
+
+The following command loads the subset of CSV rows having the _type_
+field set to 'gum'
+
+```bash
+docker run --rm -it \
+  -v $(pwd):/data ghcr.io/davidecavestro/123table:fast-latest \
+  -url jdbc:sqlite:/data/foo.db \
+  -query "SELECT * FROM foo WHERE type='gum'"
+```
+
+Please note it explicitly pass the query for reading rows from the CSV
+file. This implies referring to the CSV as if it were a table.
+
+CHeck [the CLI syntax](/123table/guide/cli.html) for more details.
+
+
 ### Truncate a table then add rows from another db
 
 The following command truncates the _bar_ table on _target_ db,
