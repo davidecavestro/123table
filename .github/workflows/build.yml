@@ -42,7 +42,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
  
       - name: Build for tests
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           target: tests
@@ -101,7 +101,7 @@ jobs:
 
       - name: Build and push image
         id: cold_img_build
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           platforms: linux/amd64,linux/arm64
@@ -111,7 +111,7 @@ jobs:
             ghcr.io/${{ github.repository }}:${{ github.ref_name }}
 
       - name: Push latest image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           target: cold
@@ -124,7 +124,7 @@ jobs:
 
       - name: Build and push slim image
         id: slim_img_build
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           target: slim
@@ -135,7 +135,7 @@ jobs:
           # cache-from: type=registry,ref:${{ steps.cold_img_build.outputs.metadata.ref }}
 
       - name: Push latest slim image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           target: slim
@@ -148,7 +148,7 @@ jobs:
 
       - name: Build and push fast image
         id: fast_img_build
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           target: fast
@@ -159,7 +159,7 @@ jobs:
           # cache-from: type=registry,ref:${{ steps.cold_img_build.outputs.metadata.ref }}
 
       - name: Push latest fast image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           target: fast
@@ -172,7 +172,7 @@ jobs:
 
       - name: Build and push fast-slim image
         id: fastslim_img_build
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           target: fast-slim
@@ -183,7 +183,7 @@ jobs:
           # cache-from: type=registry,ref:${{ steps.cold_img_build.outputs.metadata.ref }}
 
       - name: Push latest fast-slim image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           target: fast-slim
