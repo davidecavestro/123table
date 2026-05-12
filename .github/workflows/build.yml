@@ -195,7 +195,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.30.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: 'ghcr.io/${{ github.repository }}:${{ github.ref_name }}-fast'
           format: 'table'
