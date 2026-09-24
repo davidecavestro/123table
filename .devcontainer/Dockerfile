@@ -1,4 +1,4 @@
-FROM groovy:4.0-jdk21
+FROM groovy:6.0-jdk21
 
 USER 0:0
 RUN \
