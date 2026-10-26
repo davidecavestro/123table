@@ -65,7 +65,7 @@ FROM tests-base AS tests
 COPY --from=build /app/*.groovy /app
 
 
-FROM azul/zulu-openjdk:21-jre-crac-latest AS slim
+FROM azul/zulu-openjdk:25-jre-crac-latest AS slim
 ARG GROOVY_VERSION
 ENV GROOVY_VERSION=${GROOVY_VERSION}
 
